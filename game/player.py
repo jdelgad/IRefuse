@@ -21,8 +21,6 @@ class Player(object):
         points = 0
         card_in_sequence = 0
         for card in self.cards:
-            print("card = {}".format(card))
-            print("card_in_sequence = {}".format(card_in_sequence))
             if card != card_in_sequence + 1:
                 points += card
             card_in_sequence = card
