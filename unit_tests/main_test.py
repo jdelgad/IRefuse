@@ -1,4 +1,5 @@
 import main
+import game.player
 import unittest
 
 
@@ -57,9 +58,20 @@ class TestIRefuse(unittest.TestCase):
 
         def input_func():
             return inputs.pop(0)
-        action = main.prompt_for_action(3, input_func)
+        player = game.player.Player()
+        action = main.prompt_for_action(3, input_func, player)
         self.assertListEqual(inputs, [])
         self.assertEquals(action, 1)
+
+    def test_player_no_action(self):
+        def input_func():
+            return 1
+        player = game.player.Player()
+        player.tokens = 0
+        self.assertListEqual(player.cards, [])
+        main.prompt_for_action(3, input_func, player)
+        self.assertListEqual(player.cards, [3])
+
 
 if __name__ == '__main__':
     unittest.main()
