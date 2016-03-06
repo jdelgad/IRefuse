@@ -1,4 +1,4 @@
-#!/usr/bin/env python -tt
+#!/usr/bin/python -tt
 
 import random
 import game.player
