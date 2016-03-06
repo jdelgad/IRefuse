@@ -42,9 +42,24 @@ def prompt_for_action(card, tokens, input_func, player):
         player.take_card(card, tokens)
 
 
+def determine_winner(players):
+    player_totals = {}
+    for player in players:
+        if player.calculate_points() in player_totals:
+            player_totals[player.calculate_points()].append(player)
+        else:
+            player_totals[player.calculate_points()] = [player]
+
+    sorted_totals = sorted(player_totals.keys())
+    print(player_totals)
+    return player_totals[sorted_totals[0]]
+
+
 def main():
     players = setup_players(input)
     cards = setup_cards()
 
 if __name__ == "__main__":
     main()
+
+
