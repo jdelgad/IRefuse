@@ -8,16 +8,16 @@ def play_game(players, cards, input_func):
     :return:
     """
     max_flips = len(cards)
-    player = players[0]
+    player = players.next()
     for i in range(max_flips):
         card = flip_card(cards)
         tokens = 0
         while not prompt_for_action(card, tokens, input_func, player):
             tokens += 1
-            player = get_next_player(player, players)
-        player = get_next_player(player, players)
+            player = players.next(player)
+        player = players.next(player)
 
-    return determine_winner(players)
+    return players.determine_winner()
 
 
 def flip_card(cards):
@@ -60,32 +60,5 @@ def prompt_for_action(card, tokens, input_func, player):
         return True
 
 
-def determine_winner(players):
-    """
-    Given the list of all players, calculate who won. Ties can occur.
-
-    :param players:
-    :return:
-    """
-    player_totals = {}
-    for player in players:
-        if player.calculate_points() in player_totals:
-            player_totals[player.calculate_points()].append(player)
-        else:
-            player_totals[player.calculate_points()] = [player]
-
-    sorted_totals = sorted(player_totals.keys())
-    return player_totals[sorted_totals[0]]
 
 
-def get_next_player(player, players):
-    """
-    Gets the next player in the players list.
-
-    :param player: Player who just took a turn.
-    :param players: Players currently playing.
-    :return: The next player who will take a turn.
-    """
-    index = players.index(player)
-    index = (index + 1) % len(players)
-    return players[index]

@@ -1,6 +1,7 @@
 #!/usr/bin/python -tt
 from game.engine import play_game
-from game.setup import setup_players, setup_cards
+from game.setup import setup_cards
+from game.player import setup_players
 
 
 def main():

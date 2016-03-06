@@ -70,50 +70,6 @@ class TestIRefuse(unittest.TestCase):
         except IndexError:
             pass
 
-    def test_determine_winner(self):
-        players = [game.player.Player(), game.player.Player(), game.player.Player()]
-        players[0].tokens = 2
-        players[0].cards = [3, 5]
-
-        players[1].tokens = 4
-        players[1].cards = [6, 7]
-
-        players[2].tokens = 3
-        players[2].cards = []
-
-        winners = game.engine.determine_winner(players)
-        self.assertEquals(len(winners), 1)
-        self.assertEquals(winners[0], players[2])
-        self.assertEquals(winners[0].calculate_points(), -3)
-
-    def test_determine_winner_tie(self):
-        players = [game.player.Player(), game.player.Player(), game.player.Player()]
-        players[0].tokens = 2
-        players[0].cards = [3, 12]
-
-        players[1].tokens = 2
-        players[1].cards = [5, 14]
-
-        players[2].tokens = 0
-        players[2].cards = [13]
-
-        expected_winners = [players[0], players[2]]
-        winners = game.engine.determine_winner(players)
-        self.assertEquals(len(winners), 2)
-        self.assertListEqual(expected_winners, winners)
-
-    def test_get_next_player(self):
-        players = [game.player.Player(), game.player.Player(), game.player.Player()]
-        player = players[0]
-        player = game.engine.get_next_player(player, players)
-        self.assertEquals(players[1], player)
-
-        player = game.engine.get_next_player(player, players)
-        self.assertEquals(players[2], player)
-
-        player = game.engine.get_next_player(player, players)
-        self.assertEquals(players[0], player)
-
     def test_play_game(self):
         inputs = [1, 2, 1, 1]
 
@@ -121,16 +77,16 @@ class TestIRefuse(unittest.TestCase):
             return inputs.pop(0)
 
         cards = [3, 5]
-        players = [game.player.Player(), game.player.Player()]
-        players[0].tokens = 2
-        self.assertListEqual(players[0].cards, [])
-        players[1].tokens = 1
-        self.assertListEqual(players[0].cards, [])
+        players = game.player.Players(2)
+        players.players[0].tokens = 2
+        self.assertListEqual(players.players[0].cards, [])
+        players.players[1].tokens = 1
+        self.assertListEqual(players.players[0].cards, [])
 
         winner = game.engine.play_game(players, cards, input_func)
         self.assertEquals(1, len(winner))
-        self.assertEquals(players[0].calculate_points(), 1)
-        self.assertEquals(players[1].calculate_points(), 4)
+        self.assertEquals(players.players[0].calculate_points(), 1)
+        self.assertEquals(players.players[1].calculate_points(), 4)
 
 
 if __name__ == '__main__':

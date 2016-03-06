@@ -1,45 +1,10 @@
 import unittest
 
+import game.player
 import game.setup
 
 
 class TestSetup(unittest.TestCase):
-    def test_two_players(self):
-        def input_func():
-            return 2
-        try:
-            game.setup.setup_players(input_func)
-            self.fail("2 players are not allowed")
-        except AssertionError:
-            pass
-
-    def test_three_players(self):
-        def input_func():
-            return 3
-        try:
-            players = game.setup.setup_players(input_func)
-            self.assertEquals(3, len(players))
-        except AssertionError:
-            self.fail("3 players are allowed")
-
-    def test_five_players(self):
-        def input_func():
-            return 5
-        try:
-            players = game.setup.setup_players(input_func)
-            self.assertEquals(5, len(players))
-        except AssertionError:
-            self.fail("5 players are allowed")
-
-    def test_six_players(self):
-        def input_func():
-            return 6
-        try:
-            game.setup.setup_players(input_func)
-            self.fail("6 players are not allowed")
-        except AssertionError:
-            pass
-
     def setup_cards(self):
         cards_one = game.setup.setup_cards()
         cards_two = game.setup.setup_cards()
