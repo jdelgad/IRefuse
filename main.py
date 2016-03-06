@@ -23,21 +23,23 @@ def can_pass(player):
     return player.tokens == 0
 
 
-def prompt_for_action(card, input_func, player):
+def prompt_for_action(card, tokens, input_func, player):
     if not player.can_pass():
-        player.take_card(card)
+        player.take_card(card, tokens)
         return
 
-    accepted_action = False
-    while not accepted_action:
+    action = 0
+    while not (action == 1 or action == 2):
         print("\nAvailable card: {}".format(card))
         print("What action do you wish to perform: ")
         print("1. Pass")
         print("2. Accept card")
         action = input_func()
-        accepted_action = action == 1 or action == 2
-    return action
 
+    if action == 1:
+        player.passes()
+    elif action == 2:
+        player.take_card(card, tokens)
 
 def main():
     players = setup_players(input)

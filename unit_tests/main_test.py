@@ -53,15 +53,27 @@ class TestIRefuse(unittest.TestCase):
         self.assertEquals(len(cards_two), 24)
         self.assertNotEquals(cards_one, cards_two)
 
-    def test_prompt_for_action(self):
+    def test_prompt_for_action_passes(self):
         inputs = [0, 1]
 
         def input_func():
             return inputs.pop(0)
         player = game.player.Player()
-        action = main.prompt_for_action(3, input_func, player)
+        self.assertEquals(player.tokens, 11)
+        main.prompt_for_action(3, 2, input_func, player)
         self.assertListEqual(inputs, [])
-        self.assertEquals(action, 1)
+        self.assertEquals(player.tokens, 10)
+
+    def test_prompt_for_action_takes_card(self):
+        inputs = [0, 2]
+
+        def input_func():
+            return inputs.pop(0)
+        player = game.player.Player()
+        self.assertEquals(player.tokens, 11)
+        main.prompt_for_action(3, 2, input_func, player)
+        self.assertListEqual(inputs, [])
+        self.assertEquals(player.tokens, 13)
 
     def test_player_no_action(self):
         def input_func():
@@ -69,8 +81,10 @@ class TestIRefuse(unittest.TestCase):
         player = game.player.Player()
         player.tokens = 0
         self.assertListEqual(player.cards, [])
-        main.prompt_for_action(3, input_func, player)
+        self.assertEquals(player.tokens, 0)
+        main.prompt_for_action(3, 5, input_func, player)
         self.assertListEqual(player.cards, [3])
+        self.assertEquals(player.tokens, 5)
 
 
 if __name__ == '__main__':

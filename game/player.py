@@ -13,5 +13,6 @@ class Player(object):
     def can_pass(self):
         return self.tokens != 0
 
-    def take_card(self, card):
+    def take_card(self, card, tokens):
         self.cards.append(card)
+        self.tokens += tokens
