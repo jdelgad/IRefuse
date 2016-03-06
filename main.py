@@ -1,5 +1,6 @@
 #!/usr/bin/env python -tt
 
+import random
 
 def setup_players(input_func):
     print("Number of players: ")
@@ -8,8 +9,14 @@ def setup_players(input_func):
         raise AssertionError("invalid number of players")
     return num
 
+
+def setup_cards():
+    return random.sample(range(3, 36), 24)
+
+
 def main():
-    setup_players(input)
+    players = setup_players(input)
+    cards = setup_cards()
 
 if __name__ == "__main__":
     main()
