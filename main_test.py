@@ -16,7 +16,8 @@ class TestIRefuse(unittest.TestCase):
         def input_func():
             return 3
         try:
-            main.setup_players(input_func)
+            num = main.setup_players(input_func)
+            self.assertEquals(3, num)
         except AssertionError:
             self.fail("3 players are allowed")
 
@@ -24,7 +25,8 @@ class TestIRefuse(unittest.TestCase):
         def input_func():
             return 5
         try:
-            main.setup_players(input_func)
+            num = main.setup_players(input_func)
+            self.assertEquals(5, num)
         except AssertionError:
             self.fail("5 players are allowed")
 

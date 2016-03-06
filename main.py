@@ -6,7 +6,7 @@ def setup_players(input_func):
     num = input_func()
     if num < 3 or num > 5:
         raise AssertionError("invalid number of players")
-
+    return num
 
 def main():
     setup_players(input)
