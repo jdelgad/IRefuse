@@ -23,10 +23,6 @@ def flip_card(cards):
     return cards.pop()
 
 
-def can_pass(player):
-    return player.tokens == 0
-
-
 def prompt_for_action(card, tokens, input_func, player):
     if not player.can_pass():
         player.take_card(card, tokens)
@@ -44,6 +40,7 @@ def prompt_for_action(card, tokens, input_func, player):
         player.passes()
     elif action == 2:
         player.take_card(card, tokens)
+
 
 def main():
     players = setup_players(input)

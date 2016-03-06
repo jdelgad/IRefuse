@@ -16,3 +16,14 @@ class Player(object):
     def take_card(self, card, tokens):
         self.cards.append(card)
         self.tokens += tokens
+
+    def calculate_points(self):
+        points = 0
+        card_in_sequence = 0
+        for card in self.cards:
+            print("card = {}".format(card))
+            print("card_in_sequence = {}".format(card_in_sequence))
+            if card != card_in_sequence + 1:
+                points += card
+            card_in_sequence = card
+        return points - self.tokens

@@ -16,3 +16,17 @@ class TestPlayer(unittest.TestCase):
         player = game.player.Player()
         player.tokens = 0
         self.assertFalse(player.passes())
+
+    def test_calculate_points_no_sequence(self):
+        player = game.player.Player()
+        player.tokens = 2
+        player.cards = [5, 7, 9]
+        points = player.calculate_points()
+        self.assertEquals(points, 19)
+
+    def test_calculate_points_with_sequence(self):
+        player = game.player.Player()
+        player.tokens = 4
+        player.cards = [5, 6, 8, 9]
+        points = player.calculate_points()
+        self.assertEquals(points, 9)
