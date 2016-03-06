@@ -1,9 +1,31 @@
 import random
+import sys
+
+from game.player import Players
 
 
 class Game(object):
     def __init__(self):
+        self.cards = []
+        self.players = None
+
+    def setup(self, input_func):
         self.cards = self.setup_cards()
+        self.players = self.setup_players(input_func)
+
+    @staticmethod
+    def setup_players(input_func):
+        """
+        Sets up the number of players. Must be between 3-5.
+
+        :param input_func: Used for mocking input()
+        :return: A list of game.player.Player objects
+        """
+        sys.stdout.write("Enter the number of players [3-5]: ")
+        number_of_people_playing = int(input_func())
+        if number_of_people_playing < 3 or number_of_people_playing > 5:
+            raise AssertionError("invalid number of players")
+        return Players(number_of_people_playing)
 
     @staticmethod
     def setup_cards():
@@ -12,27 +34,40 @@ class Game(object):
         """
         return random.sample(range(3, 36), 24)
 
+    def determine_winner(self):
+        """
+        Calculate who won. Ties can occur.
 
-def play_game(players, cards, input_func):
-    """
-    Rules logic for I Refuse
+        :return:
+        """
+        player_totals = {}
+        for player in self.players:
+            print(player)
+            if player.calculate_points() in player_totals:
+                player_totals[player.calculate_points()].append(player)
+            else:
+                player_totals[player.calculate_points()] = [player]
 
-    :param players:
-    :param cards:
-    :param input_func:
-    :return:
-    """
-    max_flips = len(cards)
-    player = players.next()
-    for i in range(max_flips):
-        card = flip_card(cards)
-        tokens = 0
-        while not prompt_for_action(card, tokens, input_func, player):
-            tokens += 1
-            player = players.next(player)
-        player = players.next(player)
+        sorted_totals = sorted(player_totals.keys())
+        return player_totals[sorted_totals[0]]
 
-    return players.determine_winner()
+    def play(self, input_func):
+        """
+        Rules logic for I Refuse
+
+        :param input_func:
+        :return:
+        """
+        max_flips = len(self.cards)
+        player = self.players.next_player()
+        for i in range(max_flips):
+            card = flip_card(self.cards)
+            tokens = 0
+            while not prompt_for_action(card, tokens, input_func, player):
+                tokens += 1
+                player = self.players.next_player(player)
+
+        return self.determine_winner()
 
 
 def flip_card(cards):
@@ -73,7 +108,3 @@ def prompt_for_action(card, tokens, input_func, player):
     elif action == 2:
         player.take_card(card, tokens)
         return True
-
-
-
-

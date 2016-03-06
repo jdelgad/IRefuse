@@ -1,13 +1,11 @@
-import sys
-
-
 class Players(object):
     def __init__(self, number):
         self.players = []
+        self.index = 0
         for i in range(number):
             self.players.append(Player())
 
-    def next(self, player=None):
+    def next_player(self, player=None):
         """
         Gets the next player in the players list.
 
@@ -21,21 +19,18 @@ class Players(object):
         index = (index + 1) % len(self.players)
         return self.players[index]
 
-    def determine_winner(self):
-        """
-        Calculate who won. Ties can occur.
+    def __iter__(self):
+        self.index = 0
+        return self
 
-        :return:
-        """
-        player_totals = {}
-        for player in self.players:
-            if player.calculate_points() in player_totals:
-                player_totals[player.calculate_points()].append(player)
-            else:
-                player_totals[player.calculate_points()] = [player]
+    def __next__(self):
+        if self.index == len(self.players):
+            raise StopIteration
+        self.index += 1
+        return self.players[self.index-1]
 
-        sorted_totals = sorted(player_totals.keys())
-        return player_totals[sorted_totals[0]]
+    def __getitem__(self, index):
+        return self.players[index]
 
 
 class Player(object):
@@ -65,17 +60,3 @@ class Player(object):
                 points += card
             card_in_sequence = card
         return points - self.tokens
-
-
-def setup_players(input_func):
-    """
-    Sets up the number of players. Must be between 3-5.
-
-    :param input_func: Used for mocking input()
-    :return: A list of game.player.Player objects
-    """
-    sys.stdout.write("Enter the number of players [3-5]: ")
-    number_of_people_playing = int(input_func())
-    if number_of_people_playing < 3 or number_of_people_playing > 5:
-        raise AssertionError("invalid number of players")
-    return Players(number_of_people_playing)
