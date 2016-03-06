@@ -86,6 +86,33 @@ class TestIRefuse(unittest.TestCase):
         self.assertListEqual(player.cards, [3])
         self.assertEquals(player.tokens, 5)
 
+    def test_flip_card(self):
+        cards = main.setup_cards()
+        number_of_cards = len(cards)
+        self.assertEquals(24, number_of_cards)
+        top_of_deck = cards[23]
+        card = main.flip_card(cards)
+        self.assertEquals(top_of_deck, card)
+        self.assertEquals(23, len(cards))
+
+    def test_flip_entire_deck(self):
+        cards = main.setup_cards()
+        self.assertEquals(24, len(cards))
+        for i in range(24):
+            main.flip_card(cards)
+
+    def test_flip_no_more_cards(self):
+        cards = main.setup_cards()
+        self.assertEquals(24, len(cards))
+        for i in range(24):
+            main.flip_card(cards)
+
+        self.assertEquals(0, len(cards))
+        try:
+            main.flip_card(cards)
+            self.fail("cannot flip empty card deck")
+        except IndexError:
+            pass
 
 if __name__ == '__main__':
     unittest.main()

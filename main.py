@@ -19,6 +19,10 @@ def setup_cards():
     return random.sample(range(3, 36), 24)
 
 
+def flip_card(cards):
+    return cards.pop()
+
+
 def can_pass(player):
     return player.tokens == 0
 
