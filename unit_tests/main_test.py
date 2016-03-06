@@ -60,7 +60,8 @@ class TestIRefuse(unittest.TestCase):
             return inputs.pop(0)
         player = game.player.Player()
         self.assertEquals(player.tokens, 11)
-        main.prompt_for_action(3, 2, input_func, player)
+        user_took_card = main.prompt_for_action(3, 2, input_func, player)
+        self.assertFalse(user_took_card)
         self.assertListEqual(inputs, [])
         self.assertEquals(player.tokens, 10)
 
@@ -71,18 +72,20 @@ class TestIRefuse(unittest.TestCase):
             return inputs.pop(0)
         player = game.player.Player()
         self.assertEquals(player.tokens, 11)
-        main.prompt_for_action(3, 2, input_func, player)
+        user_took_card = main.prompt_for_action(3, 2, input_func, player)
+        self.assertTrue(user_took_card)
         self.assertListEqual(inputs, [])
         self.assertEquals(player.tokens, 13)
 
     def test_player_no_action(self):
         def input_func():
-            return 1
+            return 0
         player = game.player.Player()
         player.tokens = 0
         self.assertListEqual(player.cards, [])
         self.assertEquals(player.tokens, 0)
-        main.prompt_for_action(3, 5, input_func, player)
+        user_took_card = main.prompt_for_action(3, 5, input_func, player)
+        self.assertTrue(user_took_card)
         self.assertListEqual(player.cards, [3])
         self.assertEquals(player.tokens, 5)
 
@@ -146,20 +149,35 @@ class TestIRefuse(unittest.TestCase):
         self.assertEquals(len(winners), 2)
         self.assertListEqual(expected_winners, winners)
 
-    # def test_play_game(self):
-    #     inputs = [1, 2, 1, 1]
-    #
-    #     def input_func():
-    #         return inputs.pop(0)
-    #
-    #     cards = [3, 5]
-    #     players = [game.player.Player(), game.player.Player()]
-    #     players[0].tokens = 2
-    #     self.assertListEqual(players[0].cards, [])
-    #     players[1].tokens = 1
-    #     self.assertListEqual(players[0].cards, [])
-    #
-    #     main.play_game(players, input_func)
+    def test_get_next_player(self):
+        players = [game.player.Player(), game.player.Player(), game.player.Player()]
+        player = players[0]
+        player = main.get_next_player(player, players)
+        self.assertEquals(players[1], player)
+
+        player = main.get_next_player(player, players)
+        self.assertEquals(players[2], player)
+
+        player = main.get_next_player(player, players)
+        self.assertEquals(players[0], player)
+
+    def test_play_game(self):
+        inputs = [1, 2, 1, 1]
+
+        def input_func():
+            return inputs.pop(0)
+
+        cards = [3, 5]
+        players = [game.player.Player(), game.player.Player()]
+        players[0].tokens = 2
+        self.assertListEqual(players[0].cards, [])
+        players[1].tokens = 1
+        self.assertListEqual(players[0].cards, [])
+
+        winner = main.play_game(players, cards, input_func)
+        self.assertEquals(1, len(winner))
+        self.assertEquals(players[0].calculate_points(), 1)
+        self.assertEquals(players[1].calculate_points(), 4)
 
 
 if __name__ == '__main__':
