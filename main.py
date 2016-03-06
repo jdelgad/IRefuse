@@ -59,7 +59,7 @@ def prompt_for_action(card, tokens, input_func, player):
         print("What action do you wish to perform: ")
         print("1. Pass")
         print("2. Take card")
-        action = input_func()
+        action = int(input_func())
 
     if action == 1:
         player.passes()
@@ -130,6 +130,7 @@ def main():
     """
     players = setup_players(input)
     cards = setup_cards()
+    play_game(players, cards, input)
 
 if __name__ == "__main__":
     main()
