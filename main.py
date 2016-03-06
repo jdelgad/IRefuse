@@ -1,5 +1,5 @@
 #!/usr/bin/python -tt
-from game.engine import play_game
+from game.irefuse import play_game
 from game.setup import setup_cards
 from game.player import setup_players
 
