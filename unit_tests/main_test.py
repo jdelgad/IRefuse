@@ -1,4 +1,5 @@
 import main
+import game.player
 import unittest
 
 
@@ -16,8 +17,8 @@ class TestIRefuse(unittest.TestCase):
         def input_func():
             return 3
         try:
-            num = main.setup_players(input_func)
-            self.assertEquals(3, num)
+            players = main.setup_players(input_func)
+            self.assertEquals(3, len(players))
         except AssertionError:
             self.fail("3 players are allowed")
 
@@ -25,8 +26,8 @@ class TestIRefuse(unittest.TestCase):
         def input_func():
             return 5
         try:
-            num = main.setup_players(input_func)
-            self.assertEquals(5, num)
+            players = main.setup_players(input_func)
+            self.assertEquals(5, len(players))
         except AssertionError:
             self.fail("5 players are allowed")
 
@@ -35,7 +36,7 @@ class TestIRefuse(unittest.TestCase):
             return 6
         try:
             main.setup_players(input_func)
-            self.fail("2 players are not allowed")
+            self.fail("6 players are not allowed")
         except AssertionError:
             pass
 
@@ -51,6 +52,7 @@ class TestIRefuse(unittest.TestCase):
         self.assertEquals(len(cards_one), 24)
         self.assertEquals(len(cards_two), 24)
         self.assertNotEquals(cards_one, cards_two)
+
 
 if __name__ == '__main__':
     unittest.main()
