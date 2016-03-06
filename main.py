@@ -2,6 +2,7 @@
 
 import random
 import game.player
+import sys
 
 
 def setup_players(input_func):
@@ -11,7 +12,8 @@ def setup_players(input_func):
     :param input_func: Used for mocking input()
     :return: A list of game.player.Player objects
     """
-    num = input_func()
+    sys.stdout.write("Enter the number of players [3-5]: ")
+    num = int(input_func())
     if num < 3 or num > 5:
         raise AssertionError("invalid number of players")
     players = []
