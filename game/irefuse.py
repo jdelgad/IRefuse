@@ -87,7 +87,8 @@ class Game(object):
     @staticmethod
     def prompt_for_action(card, tokens, input_func, player):
         """
-        Prompts the user for action, returns true if the user takes a cards, false otherwise.
+        Prompts the user for action, returns true if the user takes a cards,
+        false otherwise.
 
         :param card: The card currently face up.
         :param tokens: The amount of tokens on the face up card.
@@ -101,7 +102,8 @@ class Game(object):
 
         action = 0
         while not (action == 1 or action == 2):
-            print("\nAvailable card: {}, Number of tokens: {}".format(card, tokens))
+            print("\nAvailable card: {}, Number of tokens: {}".format(card,
+                                                                      tokens))
             print("What action do you wish to perform: ")
             print("1. Pass")
             print("2. Take card")

@@ -72,7 +72,8 @@ class TestIRefuse(unittest.TestCase):
         game_irefuse = game.irefuse.Game()
         game_irefuse.players = game.player.Players(1)
         self.assertEquals(game_irefuse.players[0].tokens, 11)
-        user_took_card = game_irefuse.prompt_for_action(3, 2, input_func, game_irefuse.players[0])
+        user_took_card = game_irefuse.prompt_for_action(3, 2, input_func,
+                                                        game_irefuse.players[0])
         self.assertFalse(user_took_card)
         self.assertListEqual(inputs, [])
         self.assertEquals(game_irefuse.players[0].tokens, 10)
@@ -86,7 +87,8 @@ class TestIRefuse(unittest.TestCase):
         game_irefuse = game.irefuse.Game()
         game_irefuse.players = game.player.Players(1)
         self.assertEquals(game_irefuse.players[0].tokens, 11)
-        user_took_card = game_irefuse.prompt_for_action(3, 2, input_func, game_irefuse.players[0])
+        user_took_card = game_irefuse.prompt_for_action(3, 2, input_func,
+                                                        game_irefuse.players[0])
         self.assertTrue(user_took_card)
         self.assertListEqual(inputs, [])
         self.assertEquals(game_irefuse.players[0].tokens, 13)
@@ -101,7 +103,8 @@ class TestIRefuse(unittest.TestCase):
         game_irefuse.players[0].tokens = 0
         self.assertListEqual(game_irefuse.players[0].cards, [])
         self.assertEquals(game_irefuse.players[0].tokens, 0)
-        user_took_card = game_irefuse.prompt_for_action(3, 5, input_func, game_irefuse.players[0])
+        user_took_card = game_irefuse.prompt_for_action(3, 5, input_func,
+                                                        game_irefuse.players[0])
         self.assertTrue(user_took_card)
         self.assertListEqual(game_irefuse.players[0].cards, [3])
         self.assertEquals(game_irefuse.players[0].tokens, 5)

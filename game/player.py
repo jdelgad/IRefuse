@@ -46,7 +46,8 @@ class Players(object):
         """
         Python 3 construct to get the next element in the players list.
 
-        :return: The next player in the list. Will throw StopIteration when the list has been exhausted.
+        :return: The next player in the list. Will throw StopIteration when
+        the list has been exhausted.
         """
         if self.index == len(self.players):
             raise StopIteration
@@ -65,7 +66,8 @@ class Players(object):
 
 class Player(object):
     """
-    A player in the game. Every player starts with an empty hand and with 11 tokens.
+    A player in the game. Every player starts with an empty hand and with 11
+    tokens.
     """
 
     def __init__(self, number):
@@ -78,8 +80,9 @@ class Player(object):
 
     def passes(self):
         """
-        The player wishes to pass. If the player can pass (has a token), then they are allowed and a token is subtracted
-        from their hand. No state is changed if they cannot pass.
+        The player wishes to pass. If the player can pass (has a token),
+        then they are allowed and a token is subtracted from their hand. No
+        state is changed if they cannot pass.
 
         :return: A boolean indicating whether the player was able to pass.
         """
@@ -110,7 +113,8 @@ class Player(object):
 
     def calculate_points(self):
         """
-        Calculate the number of points the user has given their cards and tokens.
+        Calculate the number of points the user has given their cards and
+        tokens.
 
         :return: The number of points the user currently has.
         """
@@ -125,7 +129,8 @@ class Player(object):
 
     def stats(self):
         cards = sorted(self.cards)
-        return "{}: cards = {}; tokens = {}; points = {}".format(self.__str__(),
-                                                                 cards,
-                                                                 self.tokens,
-                                                                 self.calculate_points())
+        return "{}: cards = {}; tokens = {}; points = {}"\
+            .format(self.__str__(),
+                    cards,
+                    self.tokens,
+                    self.calculate_points())
