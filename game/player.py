@@ -1,3 +1,11 @@
+"""
+Module is responsible for handling the players playing 'I Refuse'.
+
+ Author: Jacob Delgado
+ Date: Mar 6, 2016
+"""
+
+
 class Players(object):
     """
     Represents the list of all players in the game.

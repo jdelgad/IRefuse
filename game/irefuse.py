@@ -1,3 +1,9 @@
+"""
+Module is responsible for handling of game/business logic behind 'I Refuse'
+
+ Author: Jacob Delgado
+ Date: Mar 6, 2016
+"""
 import random
 import sys
 
@@ -6,7 +12,7 @@ from game.player import Players
 
 class Game(object):
     """
-    The game logic behind I Refuse
+    The game logic behind 'I Refuse.'
     """
     def __init__(self):
         self.cards = []

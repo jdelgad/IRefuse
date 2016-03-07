@@ -1,3 +1,9 @@
+"""
+Module is responsible for testing of players module in 'I Refuse.'
+
+ Author: Jacob Delgado
+ Date: Mar 6, 2016
+"""
 import game.irefuse
 import game.player
 import unittest

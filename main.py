@@ -1,7 +1,9 @@
 #!/usr/bin/python -tt
-from game.irefuse import play_game, setup_players
-from game.setup import setup_cards
-from game.player import setup_players
+"""
+ Author: Jacob Delgado
+ Date: Mar 6, 2016
+"""
+import game.irefuse
 
 
 def main():
@@ -10,9 +12,14 @@ def main():
 
     :return: None
     """
-    players = setup_players(input)
-    cards = setup_cards()
-    play_game(players, cards, input)
+    game_play = game.irefuse.Game()
+    game_play.setup(input)
+    winners = game_play.play(input)
+
+    print("\n------------")
+    print("The winners are:")
+    for winner in winners:
+        print(winner)
 
 if __name__ == "__main__":
     main()
