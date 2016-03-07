@@ -78,3 +78,15 @@ class TestPlayer(unittest.TestCase):
         player.cards = [24, 7, 6, 5]
         points = player.calculate_points()
         self.assertEquals(points, 28)
+
+    def test_print_string(self):
+        player = game.player.Player(5)
+        player_str = player.__str__()
+        self.assertEquals("Player 5", player_str)
+
+    def test_print_stats(self):
+        player = game.player.Player(5)
+        player.tokens = 1
+        player.cards = [24, 7, 6, 5]
+        stats = player.stats()
+        self.assertEquals("Player 5: cards = [5, 6, 7, 24]; tokens = 1; points = 28", stats)

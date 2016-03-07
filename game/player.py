@@ -120,3 +120,10 @@ class Player(object):
                 points += card
             card_in_sequence = card
         return points - self.tokens
+
+    def stats(self):
+        cards = sorted(self.cards)
+        return "{}: cards = {}; tokens = {}; points = {}".format(self.__str__(),
+                                                                 cards,
+                                                                 self.tokens,
+                                                                 self.calculate_points())
