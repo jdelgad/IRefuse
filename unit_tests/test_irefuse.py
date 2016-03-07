@@ -64,61 +64,68 @@ class TestIRefuse(unittest.TestCase):
 
         def input_func():
             return inputs.pop(0)
-        player = game.player.Player(1)
-        self.assertEquals(player.tokens, 11)
-        user_took_card = game.irefuse.prompt_for_action(3, 2, input_func, player)
+        game_irefuse = game.irefuse.Game()
+        game_irefuse.players = game.player.Players(1)
+        self.assertEquals(game_irefuse.players[0].tokens, 11)
+        user_took_card = game_irefuse.prompt_for_action(3, 2, input_func, game_irefuse.players[0])
         self.assertFalse(user_took_card)
         self.assertListEqual(inputs, [])
-        self.assertEquals(player.tokens, 10)
+        self.assertEquals(game_irefuse.players[0].tokens, 10)
 
     def test_prompt_for_action_takes_card(self):
         inputs = [0, 2]
 
         def input_func():
             return inputs.pop(0)
-        player = game.player.Player(1)
-        self.assertEquals(player.tokens, 11)
-        user_took_card = game.irefuse.prompt_for_action(3, 2, input_func, player)
+        game_irefuse = game.irefuse.Game()
+        game_irefuse.players = game.player.Players(1)
+        self.assertEquals(game_irefuse.players[0].tokens, 11)
+        user_took_card = game_irefuse.prompt_for_action(3, 2, input_func, game_irefuse.players[0])
         self.assertTrue(user_took_card)
         self.assertListEqual(inputs, [])
-        self.assertEquals(player.tokens, 13)
+        self.assertEquals(game_irefuse.players[0].tokens, 13)
 
     def test_player_no_action(self):
         def input_func():
             return 0
-        player = game.player.Player(1)
-        player.tokens = 0
-        self.assertListEqual(player.cards, [])
-        self.assertEquals(player.tokens, 0)
-        user_took_card = game.irefuse.prompt_for_action(3, 5, input_func, player)
+        game_irefuse = game.irefuse.Game()
+        game_irefuse.players = game.player.Players(1)
+
+        game_irefuse.players[0].tokens = 0
+        self.assertListEqual(game_irefuse.players[0].cards, [])
+        self.assertEquals(game_irefuse.players[0].tokens, 0)
+        user_took_card = game_irefuse.prompt_for_action(3, 5, input_func, game_irefuse.players[0])
         self.assertTrue(user_took_card)
-        self.assertListEqual(player.cards, [3])
-        self.assertEquals(player.tokens, 5)
+        self.assertListEqual(game_irefuse.players[0].cards, [3])
+        self.assertEquals(game_irefuse.players[0].tokens, 5)
 
     def test_flip_card(self):
-        cards = game.irefuse.Game.setup_cards()
-        number_of_cards = len(cards)
+        game_irefuse = game.irefuse.Game()
+        game_irefuse.cards = game.irefuse.Game.setup_cards()
+        number_of_cards = len(game_irefuse.cards)
         self.assertEquals(24, number_of_cards)
-        top_of_deck = cards[23]
-        card = game.irefuse.flip_card(cards)
+        top_of_deck = game_irefuse.cards[23]
+        card = game_irefuse.flip_card()
         self.assertEquals(top_of_deck, card)
-        self.assertEquals(23, len(cards))
+        self.assertEquals(23, len(game_irefuse.cards))
 
     def test_flip_entire_deck(self):
-        cards = game.irefuse.Game.setup_cards()
-        self.assertEquals(24, len(cards))
+        game_irefuse = game.irefuse.Game()
+        game_irefuse.cards = game.irefuse.Game.setup_cards()
+        self.assertEquals(24, len(game_irefuse.cards))
         for i in range(24):
-            game.irefuse.flip_card(cards)
+            game_irefuse.flip_card()
 
     def test_flip_no_more_cards(self):
-        cards = game.irefuse.Game.setup_cards()
-        self.assertEquals(24, len(cards))
+        game_irefuse = game.irefuse.Game()
+        game_irefuse.cards = game.irefuse.Game.setup_cards()
+        self.assertEquals(24, len(game_irefuse.cards))
         for i in range(24):
-            game.irefuse.flip_card(cards)
+            game_irefuse.flip_card()
 
-        self.assertEquals(0, len(cards))
+        self.assertEquals(0, len(game_irefuse.cards))
         try:
-            game.irefuse.flip_card(cards)
+            game_irefuse.flip_card()
             self.fail("cannot flip empty card deck")
         except IndexError:
             pass

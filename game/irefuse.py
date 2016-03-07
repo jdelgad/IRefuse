@@ -75,52 +75,52 @@ class Game(object):
         max_flips = len(self.cards)
         player = self.players.next_player()
         for i in range(max_flips):
-            card = flip_card(self.cards)
+            card = self.flip_card()
             tokens = 0
-            while not prompt_for_action(card, tokens, input_func, player):
+            while not self.prompt_for_action(card, tokens, input_func, player):
                 tokens += 1
                 player = self.players.next_player(player)
 
         return self.determine_winner()
 
+    @staticmethod
+    def prompt_for_action(card, tokens, input_func, player):
+        """
+        Prompts the user for action, returns true if the user takes a cards, false otherwise.
 
-def flip_card(cards):
-    """
-    Flips the top card on the deck
+        :param card: The card currently face up.
+        :param tokens: The amount of tokens on the face up card.
+        :param input_func: Prompt for user input.
+        :param player: The player whose action it is.
+        :return: True if the user took the card, false if not.
+        """
+        if not player.can_pass():
+            player.take_card(card, tokens)
+            return True
 
-    :param cards:
-    :return:
-    """
-    return cards.pop()
+        action = 0
+        while not (action == 1 or action == 2):
+            print("\nAvailable card: {}, Number of tokens: {}".format(card, tokens))
+            print("What action do you wish to perform: ")
+            print("1. Pass")
+            print("2. Take card")
+            print("------------")
+            sys.stdout.write("Selection: ")
+            action = int(input_func())
+
+        if action == 1:
+            player.passes()
+            return False
+        elif action == 2:
+            player.take_card(card, tokens)
+            return True
+
+    def flip_card(self):
+        """
+        Flips the top card on the deck
+
+        :return: The newest card to be face up.
+        """
+        return self.cards.pop()
 
 
-def prompt_for_action(card, tokens, input_func, player):
-    """
-    Prompts the user for action, returns true if the user takes a cards, false otherwise.
-
-    :param card:
-    :param tokens:
-    :param input_func:
-    :param player:
-    :return: True if the user took the card, false if not.
-    """
-    if not player.can_pass():
-        player.take_card(card, tokens)
-        return True
-
-    action = 0
-    while not (action == 1 or action == 2):
-        print("\nAvailable card: {}, Number of tokens: {}".format(card, tokens))
-        print("What action do you wish to perform: ")
-        print("1. Pass")
-        print("2. Take card")
-        print("------------")
-        sys.stdout.write("Selection: ")
-        action = int(input_func())
-
-    if action == 1:
-        player.passes()
-        return False
-    elif action == 2:
-        player.take_card(card, tokens)
-        return True
