@@ -68,7 +68,7 @@ class TestPlayer(unittest.TestCase):
 
     def test_calculate_points_with_sequence(self):
         player = game.player.Player()
-        player.tokens = 4
-        player.cards = [5, 6, 8, 9]
+        player.tokens = 1
+        player.cards = [24, 7, 6, 5]
         points = player.calculate_points()
-        self.assertEquals(points, 9)
+        self.assertEquals(points, 28)

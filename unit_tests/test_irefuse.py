@@ -153,6 +153,53 @@ class TestIRefuse(unittest.TestCase):
         self.assertEquals(game_irefuse.players[2].tokens, 2)
         self.assertEquals(game_irefuse.players[2].calculate_points(), -2)
 
+    def test_play_game_ends_in_tie(self):
+        inputs = [1, 1, 2, 2, 1, 1]
+
+        def input_func():
+            return inputs.pop(0)
+
+        def four_players():
+            return 4
+
+        game_irefuse = game.irefuse.Game()
+        game_irefuse.setup(four_players)
+        game_irefuse.cards = [3, 5, 6, 7]
+
+        game_irefuse.players[0].tokens = 1
+        game_irefuse.players[0].cards = [14]
+        self.assertListEqual(game_irefuse.players[0].cards, [14])
+        game_irefuse.players[1].tokens = 1
+        game_irefuse.players[1].cards = [30]
+        self.assertListEqual(game_irefuse.players[1].cards, [30])
+        game_irefuse.players[2].tokens = 0
+        game_irefuse.players[2].cards = [24]
+        self.assertListEqual(game_irefuse.players[2].cards, [24])
+        game_irefuse.players[3].tokens = 2
+        game_irefuse.players[3].cards = [16]
+        self.assertListEqual(game_irefuse.players[3].cards, [16])
+
+        winner = game_irefuse.play(input_func)
+        self.assertEquals(2, len(winner))
+        self.assertEquals(winner[0], game_irefuse.players[0])
+        self.assertEquals(winner[1], game_irefuse.players[3])
+
+        self.assertListEqual(game_irefuse.players[0].cards, [14, 3])
+        self.assertEquals(game_irefuse.players[0].tokens, 2)
+        self.assertEquals(game_irefuse.players[0].calculate_points(), 15)
+
+        self.assertListEqual(game_irefuse.players[1].cards, [30])
+        self.assertEquals(game_irefuse.players[1].tokens, 0)
+        self.assertEquals(game_irefuse.players[1].calculate_points(), 30)
+
+        self.assertListEqual(game_irefuse.players[2].cards, [24, 7, 6, 5])
+        self.assertEquals(game_irefuse.players[2].tokens, 1)
+        self.assertEquals(game_irefuse.players[2].calculate_points(), 28)
+
+        self.assertListEqual(game_irefuse.players[3].cards, [16])
+        self.assertEquals(game_irefuse.players[3].tokens, 1)
+        self.assertEquals(game_irefuse.players[3].calculate_points(), 15)
+
     def test_determine_winner(self):
 
         def three_players():
