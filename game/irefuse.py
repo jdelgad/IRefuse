@@ -84,8 +84,7 @@ class Game(object):
 
         return self.determine_winner()
 
-    @staticmethod
-    def prompt_for_action(card, tokens, input_func, player):
+    def prompt_for_action(self, card, tokens, input_func, player):
         """
         Prompts the user for action, returns true if the user takes a cards,
         false otherwise.
@@ -101,8 +100,11 @@ class Game(object):
             return True
 
         action = 0
+        for p in self.players:
+            print(p.stats())
         while not (action == 1 or action == 2):
-            print("\nAvailable card: {}, Number of tokens: {}".format(card,
+            print("\n{} it is your turn".format(player))
+            print("Available card: {}, Number of tokens: {}".format(card,
                                                                       tokens))
             print("What action do you wish to perform: ")
             print("1. Pass")
