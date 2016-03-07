@@ -1,4 +1,9 @@
 class Players(object):
+    """
+    Represents the list of all players in the game.
+
+    Interface is similar to an array of players objects.
+    """
     def __init__(self, number):
         self.players = []
         self.index = 0
@@ -20,25 +25,50 @@ class Players(object):
         return self.players[index]
 
     def __iter__(self):
+        """
+        Allows the Players object to be used as an iterable object.
+
+        :return: A reference to the iter.
+        """
         self.index = 0
         return self
 
     def __next__(self):
+        """
+        Python 3 construct to get the next element in the players list.
+
+        :return: The next player in the list. Will throw StopIteration when the list has been exhausted.
+        """
         if self.index == len(self.players):
             raise StopIteration
         self.index += 1
         return self.players[self.index-1]
 
     def __getitem__(self, index):
+        """
+        Allow a players object to access elements similar to an array.
+
+        :param index: The index to a player playing the game.
+        :return: A player object referenced by index.
+        """
         return self.players[index]
 
 
 class Player(object):
+    """
+    A player in the game. Every player starts with an empty hand and with 11 tokens.
+    """
     def __init__(self):
         self.cards = []
         self.tokens = 11
 
     def passes(self):
+        """
+        The player wishes to pass. If the player can pass (has a token), then they are allowed and a token is subtracted
+        from their hand. No state is changed if they cannot pass.
+
+        :return: A boolean indicating whether the player was able to pass.
+        """
         if self.can_pass():
             self.tokens -= 1
             return True
@@ -46,13 +76,30 @@ class Player(object):
             return False
 
     def can_pass(self):
+        """
+        The user is only allowed to pass if they have one or more tokens.
+
+        :return: Boolean if they have >= 1 token.
+        """
         return self.tokens != 0
 
     def take_card(self, card, tokens):
+        """
+
+
+        :param card:
+        :param tokens:
+        :return:
+        """
         self.cards.append(card)
         self.tokens += tokens
 
     def calculate_points(self):
+        """
+        Calculate the number of points the user has given their cards and tokens.
+
+        :return: The number of points the user currently has.
+        """
         points = 0
         card_in_sequence = 0
         cards = sorted(self.cards)

@@ -5,11 +5,20 @@ from game.player import Players
 
 
 class Game(object):
+    """
+    The game logic behind I Refuse
+    """
     def __init__(self):
         self.cards = []
         self.players = None
 
     def setup(self, input_func):
+        """
+        Sets up the card game.
+
+        :param input_func: The function to use to prompt the user with.
+        :return: None
+        """
         self.cards = self.setup_cards()
         self.players = self.setup_players(input_func)
 
@@ -38,11 +47,10 @@ class Game(object):
         """
         Calculate who won. Ties can occur.
 
-        :return:
+        :return: The list of winners.
         """
         player_totals = {}
         for player in self.players:
-            print(player)
             if player.calculate_points() in player_totals:
                 player_totals[player.calculate_points()].append(player)
             else:
@@ -53,10 +61,10 @@ class Game(object):
 
     def play(self, input_func):
         """
-        Rules logic for I Refuse
+        Business logic for I Refuse. Coordinates how the game is played.
 
-        :param input_func:
-        :return:
+        :param input_func: Input function to prompt the user.
+        :return: The list of winners after a game has been completed.
         """
         max_flips = len(self.cards)
         player = self.players.next_player()
