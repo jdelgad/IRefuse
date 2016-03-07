@@ -16,7 +16,7 @@ class Players(object):
         self.players = []
         self.index = 0
         for i in range(number):
-            self.players.append(Player())
+            self.players.append(Player(i))
 
     def next_player(self, player=None):
         """
@@ -66,9 +66,13 @@ class Player(object):
     """
     A player in the game. Every player starts with an empty hand and with 11 tokens.
     """
-    def __init__(self):
+    def __init__(self, number):
         self.cards = []
         self.tokens = 11
+        self.number = number
+
+    def __str__(self):
+        return "Player {}".format(self.number)
 
     def passes(self):
         """

@@ -114,6 +114,8 @@ def prompt_for_action(card, tokens, input_func, player):
         print("What action do you wish to perform: ")
         print("1. Pass")
         print("2. Take card")
+        print("------------")
+        sys.stdout.write("Selection: ")
         action = int(input_func())
 
     if action == 1:

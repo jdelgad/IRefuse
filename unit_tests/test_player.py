@@ -52,28 +52,28 @@ class TestPlayers(unittest.TestCase):
 
 class TestPlayer(unittest.TestCase):
     def test_default_player(self):
-        player = game.player.Player()
+        player = game.player.Player(1)
         self.assertEquals(player.tokens, 11)
 
     def test_passes(self):
-        player = game.player.Player()
+        player = game.player.Player(2)
         self.assertTrue(player.passes())
         self.assertEquals(player.tokens, 10)
 
     def player_cannot_pass(self):
-        player = game.player.Player()
+        player = game.player.Player(3)
         player.tokens = 0
         self.assertFalse(player.passes())
 
     def test_calculate_points_no_sequence(self):
-        player = game.player.Player()
+        player = game.player.Player(4)
         player.tokens = 2
         player.cards = [5, 7, 9]
         points = player.calculate_points()
         self.assertEquals(points, 19)
 
     def test_calculate_points_with_sequence(self):
-        player = game.player.Player()
+        player = game.player.Player(5)
         player.tokens = 1
         player.cards = [24, 7, 6, 5]
         points = player.calculate_points()
