@@ -75,7 +75,7 @@ class Game(object):
         """
         max_flips = len(self.cards)
         player = self.players.next_player()
-        for i in range(max_flips):
+        for _ in range(max_flips):
             card = self.flip_card()
             tokens = 0
             while not self.prompt_for_action(card, tokens, input_func, player):
@@ -84,7 +84,7 @@ class Game(object):
 
         return self.determine_winner()
 
-    def prompt_for_action(self, card, tokens, input_func, player):
+    def prompt_for_action(self, card, tokens, input_func, current_player):
         """
         Prompts the user for action, returns true if the user takes a cards,
         false otherwise.
@@ -92,20 +92,20 @@ class Game(object):
         :param card: The card currently face up.
         :param tokens: The amount of tokens on the face up card.
         :param input_func: Prompt for user input.
-        :param player: The player whose action it is.
+        :param current_player: The player whose action it is.
         :return: True if the user took the card, false if not.
         """
-        if not player.can_pass():
-            player.take_card(card, tokens)
+        if not current_player.can_pass():
+            current_player.take_card(card, tokens)
             return True
 
         action = 0
-        for p in self.players:
-            print(p.stats())
+        for player in self.players:
+            print(player.stats())
         while not (action == 1 or action == 2):
-            print("\n{} it is your turn".format(player))
-            print("Available card: {}, Number of tokens: {}".format(card,
-                                                                      tokens))
+            print("\n{} it is your turn".format(current_player))
+            print("Available card: {}, Number of tokens: {}"
+                  .format(card, tokens))
             print("What action do you wish to perform: ")
             print("1. Pass")
             print("2. Take card")
@@ -114,10 +114,10 @@ class Game(object):
             action = int(input_func())
 
         if action == 1:
-            player.passes()
+            current_player.passes()
             return False
         elif action == 2:
-            player.take_card(card, tokens)
+            current_player.take_card(card, tokens)
             return True
 
     def flip_card(self):

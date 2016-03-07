@@ -128,6 +128,12 @@ class Player(object):
         return points - self.tokens
 
     def stats(self):
+        """
+        Stats for the given player
+
+        :return: A string of the players given hand and number of current
+        points.
+        """
         cards = sorted(self.cards)
         return "{}: cards = {}; tokens = {}; points = {}"\
             .format(self.__str__(),
