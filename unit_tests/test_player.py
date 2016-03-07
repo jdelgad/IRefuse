@@ -10,7 +10,6 @@ import unittest
 
 
 class TestPlayers(unittest.TestCase):
-
     def test_get_next_player(self):
         players = game.player.Players(3)
         player = players.next_player()

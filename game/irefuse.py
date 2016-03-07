@@ -14,6 +14,7 @@ class Game(object):
     """
     The game logic behind 'I Refuse.'
     """
+
     def __init__(self):
         self.cards = []
         self.players = None
@@ -122,5 +123,3 @@ class Game(object):
         :return: The newest card to be face up.
         """
         return self.cards.pop()
-
-

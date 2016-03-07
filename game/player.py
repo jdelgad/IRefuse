@@ -12,6 +12,7 @@ class Players(object):
 
     Interface is similar to an array of players objects.
     """
+
     def __init__(self, number):
         self.players = []
         self.index = 0
@@ -50,7 +51,7 @@ class Players(object):
         if self.index == len(self.players):
             raise StopIteration
         self.index += 1
-        return self.players[self.index-1]
+        return self.players[self.index - 1]
 
     def __getitem__(self, index):
         """
@@ -66,6 +67,7 @@ class Player(object):
     """
     A player in the game. Every player starts with an empty hand and with 11 tokens.
     """
+
     def __init__(self, number):
         self.cards = []
         self.tokens = 11

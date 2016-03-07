@@ -21,5 +21,6 @@ def main():
     for winner in winners:
         print(winner)
 
+
 if __name__ == "__main__":
     main()

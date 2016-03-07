@@ -13,6 +13,7 @@ class TestIRefuse(unittest.TestCase):
     def test_two_players(self):
         def input_func():
             return 2
+
         try:
             game.irefuse.Game.setup_players(input_func)
             self.fail("2 players are not allowed")
@@ -22,6 +23,7 @@ class TestIRefuse(unittest.TestCase):
     def test_three_players(self):
         def input_func():
             return 3
+
         try:
             players = game.irefuse.Game.setup_players(input_func)
             self.assertEquals(3, len(players.players))
@@ -31,6 +33,7 @@ class TestIRefuse(unittest.TestCase):
     def test_five_players(self):
         def input_func():
             return 5
+
         try:
             players = game.irefuse.Game.setup_players(input_func)
             self.assertEquals(5, len(players.players))
@@ -40,6 +43,7 @@ class TestIRefuse(unittest.TestCase):
     def test_six_players(self):
         def input_func():
             return 6
+
         try:
             game.irefuse.Game.setup_players(input_func)
             self.fail("6 players are not allowed")
@@ -64,6 +68,7 @@ class TestIRefuse(unittest.TestCase):
 
         def input_func():
             return inputs.pop(0)
+
         game_irefuse = game.irefuse.Game()
         game_irefuse.players = game.player.Players(1)
         self.assertEquals(game_irefuse.players[0].tokens, 11)
@@ -77,6 +82,7 @@ class TestIRefuse(unittest.TestCase):
 
         def input_func():
             return inputs.pop(0)
+
         game_irefuse = game.irefuse.Game()
         game_irefuse.players = game.player.Players(1)
         self.assertEquals(game_irefuse.players[0].tokens, 11)
@@ -88,6 +94,7 @@ class TestIRefuse(unittest.TestCase):
     def test_player_no_action(self):
         def input_func():
             return 0
+
         game_irefuse = game.irefuse.Game()
         game_irefuse.players = game.player.Players(1)
 
