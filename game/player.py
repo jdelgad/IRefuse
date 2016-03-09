@@ -86,11 +86,9 @@ class Player(object):
 
         :return: A boolean indicating whether the player was able to pass.
         """
-        if self.can_pass():
-            self.tokens -= 1
-            return True
-        else:
-            return False
+        if not self.can_pass():
+            raise AssertionError("Player cannot pass without any tokens")
+        self.tokens -= 1
 
     def can_pass(self):
         """

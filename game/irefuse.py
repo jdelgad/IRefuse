@@ -14,6 +14,8 @@ class Game(object):
     """
     The game logic behind 'I Refuse.'
     """
+    USER_PASSES = 1
+    USER_TAKES_CARD = 2
 
     def __init__(self):
         self.cards = []
@@ -78,9 +80,15 @@ class Game(object):
         for _ in range(max_flips):
             card = self.flip_card()
             tokens = 0
-            while not self.prompt_for_action(card, tokens, input_func, player):
+            action = self.prompt_for_action(card, tokens, input_func, player)
+
+            while action == Game.USER_PASSES:
                 tokens += 1
+                player.passes()
                 player = self.players.next_player(player)
+                action = self.prompt_for_action(card, tokens, input_func,
+                                                player)
+            player.take_card(card, tokens)
 
         return self.determine_winner()
 
@@ -96,29 +104,23 @@ class Game(object):
         :return: True if the user took the card, false if not.
         """
         if not current_player.can_pass():
-            current_player.take_card(card, tokens)
-            return True
+            return Game.USER_TAKES_CARD
 
         action = 0
         for player in self.players:
             print(player.stats())
-        while not (action == 1 or action == 2):
+        while not (action == Game.USER_PASSES or action == Game.USER_TAKES_CARD):
             print("\n{} it is your turn".format(current_player))
             print("Available card: {}, Number of tokens: {}"
                   .format(card, tokens))
             print("What action do you wish to perform: ")
-            print("1. Pass")
-            print("2. Take card")
+            print("{}. Pass".format(Game.USER_PASSES))
+            print("{}. Take card".format(Game.USER_TAKES_CARD))
             print("------------")
             sys.stdout.write("Selection: ")
             action = int(input_func())
 
-        if action == 1:
-            current_player.passes()
-            return False
-        elif action == 2:
-            current_player.take_card(card, tokens)
-            return True
+        return action
 
     def flip_card(self):
         """
@@ -127,3 +129,4 @@ class Game(object):
         :return: The newest card to be face up.
         """
         return self.cards.pop()
+

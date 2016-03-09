@@ -56,13 +56,17 @@ class TestPlayer(unittest.TestCase):
 
     def test_passes(self):
         player = game.player.Player(2)
-        self.assertTrue(player.passes())
+        player.passes()
         self.assertEquals(player.tokens, 10)
 
-    def player_cannot_pass(self):
+    def test_player_cannot_pass(self):
         player = game.player.Player(3)
         player.tokens = 0
-        self.assertFalse(player.passes())
+        try:
+            player.passes()
+            self.fail()
+        except AssertionError:
+            pass
 
     def test_calculate_points_no_sequence(self):
         player = game.player.Player(4)
