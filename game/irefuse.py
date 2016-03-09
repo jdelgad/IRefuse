@@ -16,6 +16,11 @@ class Game(object):
     """
     USER_PASSES = 1
     USER_TAKES_CARD = 2
+    MIN_PLAYERS = 3
+    MAX_PLAYERS = 5
+    NUMBER_OF_ROUNDS = 24
+    MIN_CARD = 3
+    MAX_CARD = 36
 
     def __init__(self):
         self.cards = []
@@ -41,7 +46,8 @@ class Game(object):
         """
         sys.stdout.write("Enter the number of players [3-5]: ")
         number_of_people_playing = int(input_func())
-        if number_of_people_playing < 3 or number_of_people_playing > 5:
+        if number_of_people_playing < Game.MIN_PLAYERS or \
+                number_of_people_playing > Game.MAX_PLAYERS:
             raise AssertionError("invalid number of players")
         return Players(number_of_people_playing)
 
@@ -50,7 +56,8 @@ class Game(object):
         """
         :return: A list of randomized 24 cards ranging from 3-35.
         """
-        return random.sample(range(3, 36), 24)
+        return random.sample(range(Game.MIN_CARD, Game.MAX_CARD),
+                             Game.NUMBER_OF_ROUNDS)
 
     def determine_winner(self):
         """
@@ -109,7 +116,8 @@ class Game(object):
         action = 0
         for player in self.players:
             print(player.stats())
-        while not (action == Game.USER_PASSES or action == Game.USER_TAKES_CARD):
+        while not (action == Game.USER_PASSES or
+                   action == Game.USER_TAKES_CARD):
             print("\n{} it is your turn".format(current_player))
             print("Available card: {}, Number of tokens: {}"
                   .format(card, tokens))
@@ -129,4 +137,3 @@ class Game(object):
         :return: The newest card to be face up.
         """
         return self.cards.pop()
-
