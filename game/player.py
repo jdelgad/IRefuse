@@ -21,7 +21,8 @@ class Players(object):
 
     def next_player(self, player=None):
         """
-        Gets the next player in the players list.
+        Gets the next player in the players list by turn order. This will
+        repeat in a cycle.
 
         :param player: Player who just took a turn.
         :return: The next player who will take a turn.
@@ -51,8 +52,10 @@ class Players(object):
         """
         if self.index == len(self.players):
             raise StopIteration
+
+        current_index = self.index
         self.index += 1
-        return self.players[self.index - 1]
+        return self.players[current_index]
 
     def __getitem__(self, index):
         """
@@ -69,10 +72,11 @@ class Player(object):
     A player in the game. Every player starts with an empty hand and with 11
     tokens.
     """
+    STARTING_TOKENS = 11
 
     def __init__(self, number):
         self.cards = []
-        self.tokens = 11
+        self.tokens = Player.STARTING_TOKENS
         self.number = number
 
     def __str__(self):
@@ -120,7 +124,7 @@ class Player(object):
         card_in_sequence = 0
         cards = sorted(self.cards)
         for card in cards:
-            if card != card_in_sequence + 1:
+            if not self.__next_card_in_sequence(card, card_in_sequence):
                 points += card
             card_in_sequence = card
         return points - self.tokens
@@ -138,3 +142,13 @@ class Player(object):
                     cards,
                     self.tokens,
                     self.calculate_points())
+
+    @staticmethod
+    def __next_card_in_sequence(card, card_in_sequence):
+        """
+
+        :param card: Current card in player's hands.
+        :param card_in_sequence: Previous card in player's hand.
+        :return: True/False if the current card follows the previous card.
+        """
+        return card == card_in_sequence + 1
