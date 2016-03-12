@@ -1,0 +1,20 @@
+{
+  "action": "TAKE",
+  "cards": [8, 9, 11, 22],
+  "card": 5,
+  "tokens": 3,
+  "players": [
+    {
+      "tokens": 0,
+      "cards": []
+    },
+    {
+      "tokens": 1,
+      "cards": [3]
+    },
+    {
+      "tokens": 2,
+      "cards": [6, 5, 9]
+    }
+  ]
+}
