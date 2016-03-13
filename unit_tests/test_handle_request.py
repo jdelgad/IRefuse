@@ -5,19 +5,29 @@ import json
 from game.handle_request import handle_request
 
 
+def get_input(file):
+    return "requests/input/{}.json".format(file)
+
+
+def get_output(file):
+    return "requests/output/{}.json".format(file)
+
+
+def get_expected(file):
+    return "requests/expected/{}.json".format(file)
+
+
 class TestHandleRequest(unittest.TestCase):
     def test_handle_start_game(self):
-        with open("start_game.json") as data_file:
+        with open(get_input("start_game")) as data_file:
             data = json.load(data_file)
             game = handle_request(data)
 
-            with open("start_game.json.output", "w") as output_file:
-                output_file.write(game)
-        self.assertTrue(filecmp.cmp("start_game.json.expected",
-                                    "start_game.json.output"))
+            # cards must be zeroed out since they are randomized
+            output_json = json.loads(game)
+            output_json["cards"] = []
 
-    def test_handle_start_game_fails(self):
-        with open("start_game_invalid_players.json") as data_file:
-            data = json.load(data_file)
-            game = handle_request(data)
-            self.assertEquals('{ "response": 400 }', game)
+            with open(get_expected("start_game")) as expected:
+                expected_json = json.load(expected)
+            self.assertEquals(output_json, expected_json)
+
