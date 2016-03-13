@@ -17,6 +17,7 @@ Simple card game where the objective is to have the least amount of points at th
   - A run can be as few as 2 cards.
 
 ## Plan
-- v1.0: Support 3-5 players at the command prompt only
+- v1.0: Support 3-5 players at the command prompt only.
+- v1.1: Minor refactor. No rules change. Got rid of code smells.
 
 Software is licensed under the GPL
