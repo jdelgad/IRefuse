@@ -38,6 +38,20 @@ class TestHandleRequest(unittest.TestCase):
                 expected_json = json.load(expected)
             self.assertEquals(output_json, expected_json)
 
+    def test_handle_start_game_but_game_in_progress(self):
+        shutil.copy(get_expected("start_game"), "current_game.json")
+        with open(get_input("start_game")) as data_file:
+            data = json.load(data_file)
+            game = handle_request(data)
+
+            output_json = json.loads(game)
+
+            with open(get_expected("start_game_but_game_in_progress")) as \
+                    expected:
+                expected_json = json.load(expected)
+            self.assertEquals(output_json, expected_json)
+        os.remove("current_game.json")
+
     def test_handle_join_game_passes(self):
         shutil.copy(get_expected("start_game"), "current_game.json")
         with open(get_input("join_game")) as data_file:
@@ -51,6 +65,7 @@ class TestHandleRequest(unittest.TestCase):
             with open(get_expected("join_game")) as expected:
                 expected_json = json.load(expected)
             self.assertEquals(output_json, expected_json)
+        os.remove("current_game.json")
 
     def test_handle_join_game_with_none_in_progress(self):
         with open(get_input("join_game_no_game_in_progress")) as data_file:
@@ -58,6 +73,7 @@ class TestHandleRequest(unittest.TestCase):
             game = handle_request(data)
             output_json = json.loads(game)
 
-            with open(get_expected("join_game_no_game_in_progress")) as expected:
+            with open(get_expected("join_game_no_game_in_progress")) as \
+                    expected:
                 expected_json = json.load(expected)
             self.assertEquals(output_json, expected_json)

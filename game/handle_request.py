@@ -1,10 +1,17 @@
 import json
+import os
 
 from game.irefuse import Game
 
 
+def game_is_in_progress():
+    return os.path.exists("current_game.json")
+
+
 def handle_request(json_request):
     if json_request["action"] == "START":
+        if game_is_in_progress():
+            return '{ "response": 400, "message": "Game is currently in progress" }'
         current_game = setup_game(json_request)
         with open("current_game.json", "w") as current:
             current.write(current_game)
