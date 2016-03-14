@@ -1,3 +1,5 @@
 {
-  "action": "TAKE"
+  "action": "TAKE",
+  "client_address": "127.0.0.1",
+  "client_ip": 22000
 }
