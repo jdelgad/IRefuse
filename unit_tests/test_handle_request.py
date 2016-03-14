@@ -1,8 +1,7 @@
-import os
-import unittest
 import json
-
+import os
 import shutil
+import unittest
 
 from game.handle_request import handle_request
 
@@ -20,12 +19,13 @@ def get_expected(file):
 
 
 class TestHandleRequest(unittest.TestCase):
-    def test_handle_start_game(self):
+    def setUp(self):
         try:
             os.remove("current_game.json")
         except FileNotFoundError:
             pass
 
+    def test_handle_start_game(self):
         with open(get_input("start_game")) as data_file:
             data = json.load(data_file)
             game = handle_request(data)
@@ -39,10 +39,6 @@ class TestHandleRequest(unittest.TestCase):
             self.assertEquals(output_json, expected_json)
 
     def test_handle_join_game_passes(self):
-        try:
-            os.remove("current_game.json")
-        except FileNotFoundError:
-            pass
         shutil.copy(get_expected("start_game"), "current_game.json")
         with open(get_input("join_game")) as data_file:
             data = json.load(data_file)
@@ -57,11 +53,6 @@ class TestHandleRequest(unittest.TestCase):
             self.assertEquals(output_json, expected_json)
 
     def test_handle_join_game_with_none_in_progress(self):
-        try:
-            os.remove("current_game.json")
-        except FileNotFoundError:
-            pass
-
         with open(get_input("join_game_no_game_in_progress")) as data_file:
             data = json.load(data_file)
             game = handle_request(data)
