@@ -63,7 +63,7 @@ class TestHandleRequest(unittest.TestCase):
                 expected_json = json.load(expected)
             self.assertEquals(output_json, expected_json)
 
-    def test_handle_join_game_passes(self):
+    def test_handle_join_game_allowed(self):
         shutil.copy(get_expected("players"), "players.json")
         shutil.copy(get_expected("start_game"), "current_game.json")
         with open(get_input("join_game")) as data_file:

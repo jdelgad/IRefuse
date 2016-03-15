@@ -55,10 +55,9 @@ def add_player_to_game(json_request):
     with open("players.json") as game:
         players = json.loads(game.readlines()[0])
 
-    for i in range(5):
-        if i in players:
-            if players[i] is None:
-                players[i] = get_player_hash(json_request)
+    for i in players:
+        if players[i] is None:
+            players[i] = get_player_hash(json_request)
 
 
 def join_game(json_request):
@@ -67,7 +66,7 @@ def join_game(json_request):
 
 
 def game_has_been_started():
-    return os.path.exists("current_game.json")
+    return os.path.exists("current_game.json") or os.path.exists("players.json")
 
 
 def get_game_in_progress():
@@ -93,8 +92,8 @@ def has_enough_players(game):
     with open("players.json") as current_players:
         players = json.loads(current_players.readlines()[0])
 
-    for i in range(len(game["players"]["players"])):
-        if players[str(i)] is None:
+    for i in players:
+        if players[i] is None:
             return False
 
     return True
@@ -115,17 +114,10 @@ def status(json_request):
 
 
 def is_player_in_game(json_request):
-    print(json_request)
     with open("players.json") as game:
         players = json.loads(game.readlines()[0])
 
-    print(players)
-    for i in range(5):
-        print("number {}".format(i))
-        if str(i) in players:
-            print("{} in players".format(i))
-            if players[str(i)] == get_player_hash(json_request):
-                print(True)
-                return True
-    print(False)
+    for i in players:
+        if players[i] == get_player_hash(json_request):
+            return True
     return False
