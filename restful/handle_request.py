@@ -23,8 +23,6 @@ def handle_request(json_request):
             return '{ "response": 400, "message": "No game in progress" }'
     elif json_request["action"] == "STATUS":
         return status(json_request)
-    else:
-        return '{ "response": 400 }'
 
 
 def setup_game(json_request):
@@ -58,11 +56,8 @@ def add_player_to_game(json_request):
 
 
 def join_game(json_request):
-    try:
-        with open("current_game.json", "r") as current_game:
-            return current_game.readlines()[-1]
-    except FileNotFoundError:
-        return '{ "response": 400, "message": "No game in progress" }'
+    with open("current_game.json", "r") as current_game:
+        return current_game.readlines()[-1]
 
 
 def game_has_been_started():

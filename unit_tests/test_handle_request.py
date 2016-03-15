@@ -3,7 +3,7 @@ import os
 import shutil
 import unittest
 
-from game.handle_request import handle_request
+from restful.handle_request import handle_request
 
 
 def get_input(file):
