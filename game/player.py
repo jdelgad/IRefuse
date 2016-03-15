@@ -34,9 +34,6 @@ class Players(object):
         index = (index + 1) % len(self.players)
         return self.players[index]
 
-    def __len__(self):
-        return len(self.players)
-
     def __iter__(self):
         """
         Allows the Players object to be used as an iterable object.
