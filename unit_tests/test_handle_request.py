@@ -71,12 +71,11 @@ class TestHandleRequest(unittest.TestCase):
             game = handle_request(data)
 
             # cards must be zeroed out since they are randomized
-            output_json = json.loads(game)
-            output_json["cards"] = []
+            game["cards"] = []
 
             with open(get_expected("join_game")) as expected:
                 expected_json = json.load(expected)
-            self.assertEquals(output_json, expected_json)
+            self.assertEquals(game, expected_json)
 
     def test_handle_join_game_with_none_in_progress(self):
         with open(get_input("join_game")) as data_file:

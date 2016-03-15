@@ -34,11 +34,11 @@ def handle_join_request(json_request):
 def handle_join_after_start(json_request):
     if is_player_in_game(json_request):
         return PLAYER_IS_ALREADY_IN_GAME
-    elif has_enough_players(get_game_in_progress()):
+    elif has_enough_players():
         return GAME_IS_ALREADY_FULL_
     else:
         add_player_to_game(json_request)
-        return get_current_game_state(json_request)
+        return get_game_in_progress()
 
 
 def handle_start_request(json_request):
@@ -106,11 +106,6 @@ def deserialize_players():
     return players
 
 
-def get_current_game_state(json_request):
-    with open(CURRENT_GAME_JSON, "r") as current_game:
-        return current_game.readlines()[-1]
-
-
 def game_has_been_started():
     return os.path.exists(CURRENT_GAME_JSON) or os.path.exists(PLAYERS_JSON)
 
@@ -138,7 +133,7 @@ def get_current_player(game):
     return str(game["players"]["index"])
 
 
-def has_enough_players(game):
+def has_enough_players():
     with open(PLAYERS_JSON) as current_players:
         players = json.loads(current_players.readlines()[0])
 
@@ -153,7 +148,7 @@ def handle_status_request(json_request):
     if game_has_been_started():
         game = get_game_in_progress()
 
-        if has_enough_players(game):
+        if has_enough_players():
             if is_current_player(game, json_request):
                 return '{ "response": 200, "player_turn": true }'
             else:
