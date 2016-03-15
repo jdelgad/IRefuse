@@ -4,7 +4,7 @@ import os
 
 from abc import ABCMeta, abstractmethod
 
-from game.irefuse import Game
+from irefuse.irefuse import IRefuse
 
 # json responses
 GAME_IS_CURRENTLY_IN_PROGRESS = '{ "response": 400, "message": "Game is currently in progress" }'
@@ -93,7 +93,7 @@ def setup_game(json_request):
 
     initialize_players(json_request, number_of_players)
 
-    game = Game()
+    game = IRefuse()
     game.setup(number_of_players)
     return serialize_game(game)
 

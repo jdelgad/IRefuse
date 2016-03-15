@@ -7,10 +7,10 @@ Module is responsible for handling of game/business logic behind 'I Refuse'
 import random
 import sys
 
-from game.player import Players
+from irefuse.player import Players
 
 
-class Game(object):
+class IRefuse(object):
     """
     The game logic behind 'I Refuse.'
     """
@@ -46,8 +46,8 @@ class Game(object):
         """
         sys.stdout.write("Enter the number of players [3-5]: ")
         number_of_people_playing = int(input_func())
-        if number_of_people_playing < Game.MIN_PLAYERS or \
-                number_of_people_playing > Game.MAX_PLAYERS:
+        if number_of_people_playing < IRefuse.MIN_PLAYERS or \
+                number_of_people_playing > IRefuse.MAX_PLAYERS:
             raise AssertionError("invalid number of players")
         return Players(number_of_people_playing)
 
@@ -56,8 +56,8 @@ class Game(object):
         """
         :return: A list of randomized 24 cards ranging from 3-35.
         """
-        return random.sample(range(Game.MIN_CARD, Game.MAX_CARD),
-                             Game.NUMBER_OF_ROUNDS)
+        return random.sample(range(IRefuse.MIN_CARD, IRefuse.MAX_CARD),
+                             IRefuse.NUMBER_OF_ROUNDS)
 
     def determine_winner(self):
         """
@@ -89,7 +89,7 @@ class Game(object):
             tokens = 0
             action = self.prompt_for_action(card, tokens, input_func, player)
 
-            while action == Game.USER_PASSES:
+            while action == IRefuse.USER_PASSES:
                 tokens += 1
                 player.passes()
                 player = self.players.next_player(player)
@@ -111,19 +111,19 @@ class Game(object):
         :return: True if the user took the card, false if not.
         """
         if not current_player.can_pass():
-            return Game.USER_TAKES_CARD
+            return IRefuse.USER_TAKES_CARD
 
         action = 0
         for player in self.players:
             print(player.stats())
-        while not (action == Game.USER_PASSES or
-                   action == Game.USER_TAKES_CARD):
+        while not (action == IRefuse.USER_PASSES or
+                   action == IRefuse.USER_TAKES_CARD):
             print("\n{} it is your turn".format(current_player))
             print("Available card: {}, Number of tokens: {}"
                   .format(card, tokens))
             print("What action do you wish to perform: ")
-            print("{}. Pass".format(Game.USER_PASSES))
-            print("{}. Take card".format(Game.USER_TAKES_CARD))
+            print("{}. Pass".format(IRefuse.USER_PASSES))
+            print("{}. Take card".format(IRefuse.USER_TAKES_CARD))
             print("------------")
             sys.stdout.write("Selection: ")
             action = int(input_func())

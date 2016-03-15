@@ -3,7 +3,7 @@
  Author: Jacob Delgado
  Date: Mar 6, 2016
 """
-import game.irefuse
+import irefuse.irefuse
 
 
 def main():
@@ -12,7 +12,7 @@ def main():
 
     :return: None
     """
-    game_play = game.irefuse.Game()
+    game_play = irefuse.irefuse.IRefuse()
     game_play.setup(input)
     winners = game_play.play(input)
 
