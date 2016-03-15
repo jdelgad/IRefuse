@@ -17,8 +17,10 @@ def handle_request(json_request):
         return current_game
     elif json_request["action"] == "JOIN":
         if game_has_been_started():
-            if not has_enough_players(get_game_in_progress()):
-                print("what the fridge")
+            if is_player_in_game(json_request):
+                return '{ "response": 200, "message": "You are already in ' \
+                       'game" }'
+            elif not has_enough_players(get_game_in_progress()):
                 add_player_to_game(json_request)
                 return join_game(json_request)
             else:
@@ -110,3 +112,20 @@ def status(json_request):
         else:
             return '{ "response": 200, "message": "Waiting for players" }'
     return '{ "response": 200, "message": "No game has been started" }'
+
+
+def is_player_in_game(json_request):
+    print(json_request)
+    with open("players.json") as game:
+        players = json.loads(game.readlines()[0])
+
+    print(players)
+    for i in range(5):
+        print("number {}".format(i))
+        if str(i) in players:
+            print("{} in players".format(i))
+            if players[str(i)] == get_player_hash(json_request):
+                print(True)
+                return True
+    print(False)
+    return False
