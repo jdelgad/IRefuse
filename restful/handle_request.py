@@ -17,8 +17,12 @@ def handle_request(json_request):
         return current_game
     elif json_request["action"] == "JOIN":
         if game_has_been_started():
-            add_player_to_game(json_request)
-            return join_game(json_request)
+            if not has_enough_players(get_game_in_progress()):
+                print("what the fridge")
+                add_player_to_game(json_request)
+                return join_game(json_request)
+            else:
+                return '{ "response": 400, "message": "Game is already full" }'
         else:
             return '{ "response": 400, "message": "No game in progress" }'
     elif json_request["action"] == "STATUS":

@@ -79,12 +79,25 @@ class TestHandleRequest(unittest.TestCase):
             self.assertEquals(output_json, expected_json)
 
     def test_handle_join_game_with_none_in_progress(self):
-        with open(get_input("join_game_no_game_in_progress")) as data_file:
+        with open(get_input("join_game")) as data_file:
             data = json.load(data_file)
             game = handle_request(data)
             output_json = json.loads(game)
 
             with open(get_expected("join_game_no_game_in_progress")) as \
+                    expected:
+                expected_json = json.load(expected)
+            self.assertEquals(output_json, expected_json)
+
+    def test_handle_join_but_game_is_full(self):
+        shutil.copy(get_expected("all_players_in_game"), "players.json")
+        shutil.copy(get_expected("start_game"), "current_game.json")
+        with open(get_input("join_game")) as data_file:
+            data = json.load(data_file)
+            game = handle_request(data)
+            output_json = json.loads(game)
+
+            with open(get_expected("join_game_but_game_is_full")) as \
                     expected:
                 expected_json = json.load(expected)
             self.assertEquals(output_json, expected_json)
