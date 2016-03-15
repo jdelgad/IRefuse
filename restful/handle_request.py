@@ -2,33 +2,65 @@ import hashlib
 import json
 import os
 
+from abc import ABCMeta, abstractmethod
+
 from game.irefuse import Game
 
 # json responses
 GAME_IS_CURRENTLY_IN_PROGRESS = '{ "response": 400, "message": "Game is currently in progress" }'
 GAME_IS_ALREADY_FULL_ = '{ "response": 400, "message": "Game is already full" }'
 PLAYER_IS_ALREADY_IN_GAME = '{ "response": 200, "message": "You are already in game" }'
-NO_GAME_IN_PROGRESS_ = '{ "response": 400, "message": "No game in progress" }'
+NO_GAME_IN_PROGRESS = '{ "response": 400, "message": "No game in progress" }'
 
 # json files representing the current game
 CURRENT_GAME_JSON = "current_game.json"
 PLAYERS_JSON = "players.json"
 
 
-def handle_request(json_request):
+def get_request_handler(json_request):
     if json_request["action"] == "START":
-        return handle_start_request(json_request)
+        return StartRequestHandler()
     elif json_request["action"] == "JOIN":
-        return handle_join_request(json_request)
+        return JoinRequestHandler()
     elif json_request["action"] == "STATUS":
-        return handle_status_request(json_request)
+        return StatusRequestHandler()
 
 
-def handle_join_request(json_request):
-    if game_has_been_started():
-        return handle_join_after_start(json_request)
-    else:
-        return NO_GAME_IN_PROGRESS_
+class RequestHandler(metaclass=ABCMeta):
+    @abstractmethod
+    def handle(self, json_request):
+        pass
+
+
+class StartRequestHandler(RequestHandler):
+    def handle(self, json_request):
+        if game_has_been_started():
+            return GAME_IS_CURRENTLY_IN_PROGRESS
+
+        return start_game(json_request)
+
+
+class JoinRequestHandler(RequestHandler):
+    def handle(self, json_request):
+        if game_has_been_started():
+            return handle_join_after_start(json_request)
+        else:
+            return NO_GAME_IN_PROGRESS
+
+
+class StatusRequestHandler(RequestHandler):
+    def handle(self, json_request):
+        if game_has_been_started():
+            game = get_game_in_progress()
+
+            if has_enough_players():
+                if is_current_player(game, json_request):
+                    return '{ "response": 200, "player_turn": true }'
+                else:
+                    return '{ "response": 200, "player_turn": false }'
+            else:
+                return '{ "response": 200, "message": "Waiting for players" }'
+        return '{ "response": 200, "message": "No game has been started" }'
 
 
 def handle_join_after_start(json_request):
@@ -39,13 +71,6 @@ def handle_join_after_start(json_request):
     else:
         add_player_to_game(json_request)
         return get_game_in_progress()
-
-
-def handle_start_request(json_request):
-    if game_has_been_started():
-        return GAME_IS_CURRENTLY_IN_PROGRESS
-
-    return start_game(json_request)
 
 
 def start_game(json_request):
@@ -142,20 +167,6 @@ def has_enough_players():
             return False
 
     return True
-
-
-def handle_status_request(json_request):
-    if game_has_been_started():
-        game = get_game_in_progress()
-
-        if has_enough_players():
-            if is_current_player(game, json_request):
-                return '{ "response": 200, "player_turn": true }'
-            else:
-                return '{ "response": 200, "player_turn": false }'
-        else:
-            return '{ "response": 200, "message": "Waiting for players" }'
-    return '{ "response": 200, "message": "No game has been started" }'
 
 
 def is_player_in_game(json_request):

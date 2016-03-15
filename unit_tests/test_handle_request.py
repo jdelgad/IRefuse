@@ -3,7 +3,8 @@ import os
 import shutil
 import unittest
 
-from restful.handle_request import handle_request
+from restful.handle_request import JoinRequestHandler, \
+    StatusRequestHandler, StartRequestHandler
 
 
 def get_input(file):
@@ -32,15 +33,16 @@ def remove_current_game():
         pass
 
 
-class TestHandleRequest(unittest.TestCase):
+class TestStartRequestHandler(unittest.TestCase):
     def setUp(self):
         remove_current_game()
         remove_players_list()
+        self.request_handler = StartRequestHandler()
 
     def test_handle_start_game(self):
         with open(get_input("start_game")) as data_file:
             data = json.load(data_file)
-            game = handle_request(data)
+            game = self.request_handler.handle(data)
 
             # cards must be zeroed out since they are randomized
             output_json = json.loads(game)
@@ -54,7 +56,7 @@ class TestHandleRequest(unittest.TestCase):
         shutil.copy(get_expected("start_game"), "current_game.json")
         with open(get_input("start_game")) as data_file:
             data = json.load(data_file)
-            game = handle_request(data)
+            game = self.request_handler.handle(data)
 
             output_json = json.loads(game)
 
@@ -63,12 +65,19 @@ class TestHandleRequest(unittest.TestCase):
                 expected_json = json.load(expected)
             self.assertEquals(output_json, expected_json)
 
+
+class TestJoinRequestHandler(unittest.TestCase):
+    def setUp(self):
+        remove_current_game()
+        remove_players_list()
+        self.request_handler = JoinRequestHandler()
+
     def test_handle_join_game_allowed(self):
         shutil.copy(get_expected("players"), "players.json")
         shutil.copy(get_expected("start_game"), "current_game.json")
         with open(get_input("join_game")) as data_file:
             data = json.load(data_file)
-            game = handle_request(data)
+            game = self.request_handler.handle(data)
 
             # cards must be zeroed out since they are randomized
             game["cards"] = []
@@ -80,7 +89,7 @@ class TestHandleRequest(unittest.TestCase):
     def test_handle_join_game_with_none_in_progress(self):
         with open(get_input("join_game")) as data_file:
             data = json.load(data_file)
-            game = handle_request(data)
+            game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
             with open(get_expected("join_game_no_game_in_progress")) as \
@@ -93,7 +102,7 @@ class TestHandleRequest(unittest.TestCase):
         shutil.copy(get_expected("start_game"), "current_game.json")
         with open(get_input("join_game")) as data_file:
             data = json.load(data_file)
-            game = handle_request(data)
+            game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
             with open(get_expected("join_game_but_game_is_full")) as \
@@ -107,7 +116,7 @@ class TestHandleRequest(unittest.TestCase):
         shutil.copy(get_expected("start_game"), "current_game.json")
         with open(get_input("join_game")) as data_file:
             data = json.load(data_file)
-            game = handle_request(data)
+            game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
             with open(get_expected("join_player_already_in_full_game")) as \
@@ -121,7 +130,7 @@ class TestHandleRequest(unittest.TestCase):
         shutil.copy(get_expected("start_game"), "current_game.json")
         with open(get_input("join_game")) as data_file:
             data = json.load(data_file)
-            game = handle_request(data)
+            game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
             with open(get_expected("join_player_already_in_game_waiting")) as \
@@ -129,12 +138,19 @@ class TestHandleRequest(unittest.TestCase):
                 expected_json = json.load(expected)
             self.assertEquals(output_json, expected_json)
 
+
+class TestStatusRequestHandler(unittest.TestCase):
+    def setUp(self):
+        remove_current_game()
+        remove_players_list()
+        self.request_handler = StatusRequestHandler()
+
     def test_handle_status_waiting_for_players(self):
         shutil.copy(get_expected("players"), "players.json")
         shutil.copy(get_expected("start_game"), "current_game.json")
         with open(get_input("status")) as data_file:
             data = json.load(data_file)
-            game = handle_request(data)
+            game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
             with open(get_expected("status_waiting_to_start")) as expected:
@@ -144,7 +160,7 @@ class TestHandleRequest(unittest.TestCase):
     def test_handle_status_no_game_in_progress(self):
         with open(get_input("status")) as data_file:
             data = json.load(data_file)
-            game = handle_request(data)
+            game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
             with open(get_expected("status_no_game_started")) as expected:
@@ -156,7 +172,7 @@ class TestHandleRequest(unittest.TestCase):
         shutil.copy(get_expected("start_game"), "current_game.json")
         with open(get_input("status")) as data_file:
             data = json.load(data_file)
-            game = handle_request(data)
+            game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
             with open(get_expected("status_players_turn")) as expected:
@@ -168,7 +184,7 @@ class TestHandleRequest(unittest.TestCase):
         shutil.copy(get_expected("start_game"), "current_game.json")
         with open(get_input("status")) as data_file:
             data = json.load(data_file)
-            game = handle_request(data)
+            game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
             with open(get_expected("status_players_no_turn")) as expected:
