@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from abc import ABCMeta, abstractmethod
 
 from irefuse.irefuse import IRefuse
-from persistence.data import GameJournal, add_player_to_game, \
+from persistence.data import GameJournal, \
     is_current_player, has_enough_players, is_player_in_game
 
 GAME_HAS_NOT_BEEN_STARTED = '{ "response": 200, "message": "No game has been started" }'
@@ -60,7 +60,7 @@ class StartRequestHandler(RequestHandler):
         current_game = self.setup_game(json_request)
         self.game.record_game(current_game)
 
-        add_player_to_game(json_request)
+        self.game.add_player_to_game(json_request)
 
         return current_game
 
@@ -83,7 +83,8 @@ class JoinRequestHandler(RequestHandler):
         elif has_enough_players():
             return GAME_IS_ALREADY_FULL_
         else:
-            add_player_to_game(json_request)
+            game = GameJournal()
+            game.add_player_to_game(json_request)
             return self.game.get_game_in_progress()
 
 

@@ -71,14 +71,12 @@ class GameJournal(object):
     def serialize_game(self, game):
         return json.dumps(game, default=lambda o: o.__dict__)
 
+    def add_player_to_game(self, json_request):
+        players = self.get_players()
 
-def add_player_to_game(json_request):
-    game = GameJournal()
-    players = game.get_players()
-
-    for player in players:
-        if players[player] is None:
-            players[player] = get_player_hash(json_request)
+        for player in players:
+            if players[player] is None:
+                players[player] = get_player_hash(json_request)
 
 
 def get_player_hash(json_request):
