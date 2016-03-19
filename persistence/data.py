@@ -17,18 +17,35 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-# json files representing the current game
 import hashlib
 import json
 import os
+
+from irefuse.irefuse import IRefuse
 
 CURRENT_GAME_JSON = "current_game.json"
 PLAYERS_JSON = "players.json"
 
 
-class Game(object):
+class GameJournal(object):
     def __init__(self):
         pass
+
+    def initialize(self, json_request):
+
+        players = {}
+        for i in range(json_request["players"]):
+            players[i] = None
+
+        players[0] = self.get_player_hash(json_request)
+        self.record_players(players)
+
+        def number_of_players():
+            return json_request["players"]
+
+        game = IRefuse()
+        game.setup(number_of_players)
+        self.record_game(self.serialize_game(game))
 
     def record_game(self, game):
         with open(CURRENT_GAME_JSON, "w") as current:
@@ -54,60 +71,40 @@ class Game(object):
     def serialize_game(self, game):
         return json.dumps(game, default=lambda o: o.__dict__)
 
+    def add_player_to_game(self, json_request):
+        players = self.get_players()
 
-def initialize_players(json_request, number_of_players):
-    players = {}
-    for i in range(number_of_players()):
-        players[i] = None
+        for player in players:
+            if players[player] is None:
+                players[player] = self.get_player_hash(json_request)
 
-    players[0] = get_player_hash(json_request)
+    def get_player_hash(self, json_request):
+        return hashlib.md5("{}{}".format(json_request["client_ip"], json_request[
+            "client_port"]).encode("utf-8")).hexdigest()
 
-    game = Game()
-    game.record_players(players)
+    def is_current_player(self, json_request):
+        players = self.get_players()
 
+        return players[self.get_current_player()] == self.get_player_hash(
+            json_request)
 
-def add_player_to_game(json_request):
-    game = Game()
-    players = game.get_players()
+    def is_player_in_game(self, json_request):
+        game = GameJournal()
+        players = game.get_players()
 
-    for player in players:
-        if players[player] is None:
-            players[player] = get_player_hash(json_request)
+        for i in players:
+            if players[i] == self.get_player_hash(json_request):
+                return True
+        return False
 
+    def get_current_player(self):
+        return str(self.get_game_in_progress()["players"]["index"])
 
-def get_player_hash(json_request):
-    return hashlib.md5("{}{}".format(json_request["client_ip"], json_request[
-        "client_port"]).encode("utf-8")).hexdigest()
+    def has_enough_players(self):
+        players = self.get_players()
 
+        for i in players:
+            if players[i] is None:
+                return False
 
-def is_current_player(game, json_request):
-    current_game = Game()
-    players = current_game.get_players()
-
-    return players[get_current_player(game)] == get_player_hash(
-        json_request)
-
-
-def get_current_player(game):
-    return str(game["players"]["index"])
-
-
-def has_enough_players():
-    game = Game()
-    players = game.get_players()
-
-    for i in players:
-        if players[i] is None:
-            return False
-
-    return True
-
-
-def is_player_in_game(json_request):
-    game = Game()
-    players = game.get_players()
-
-    for i in players:
-        if players[i] == get_player_hash(json_request):
-            return True
-    return False
+        return True
