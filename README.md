@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/jdelgad/IRefuse.svg?branch=master)](https://travis-ci.org/jdelgad/IRefuse)
 [![codecov.io](https://codecov.io/github/jdelgad/IRefuse/coverage.svg?branch=master)](https://codecov.io/github/jdelgad/IRefuse?branch=master)
+[![Code Climate](https://codeclimate.com/github/jdelgad/IRefuse/badges/gpa.svg)](https://codeclimate.com/github/jdelgad/IRefuse)
 
 # I Refuse
 
