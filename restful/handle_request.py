@@ -17,9 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from abc import ABCMeta, abstractmethod
 
-from irefuse.irefuse import IRefuse
 from persistence.data import GameJournal, \
-    is_current_player, has_enough_players, is_player_in_game
+    has_enough_players
 
 GAME_HAS_NOT_BEEN_STARTED = '{ "response": 200, "message": "No game has been started" }'
 WAITING_FOR_PLAYERS = '{ "response": 200, "message": "Waiting for players" }'
@@ -78,7 +77,8 @@ class JoinRequestHandler(RequestHandler):
             return NO_GAME_IN_PROGRESS
 
     def handle_join_after_start(self, json_request):
-        if is_player_in_game(json_request):
+        game = GameJournal()
+        if game.is_player_in_game(json_request):
             return PLAYER_IS_ALREADY_IN_GAME
         elif has_enough_players():
             return GAME_IS_ALREADY_FULL_
@@ -91,10 +91,8 @@ class JoinRequestHandler(RequestHandler):
 class StatusRequestHandler(RequestHandler):
     def handle(self, json_request):
         if self.game.is_started():
-            game = self.game.get_game_in_progress()
-
             if has_enough_players():
-                if is_current_player(game, json_request):
+                if self.game.is_current_player(json_request):
                     return PLAYERS_TURN
                 else:
                     return NOT_PLAYERS_TURN

@@ -37,7 +37,7 @@ class GameJournal(object):
         for i in range(json_request["players"]):
             players[i] = None
 
-        players[0] = get_player_hash(json_request)
+        players[0] = self.get_player_hash(json_request)
         self.record_players(players)
 
         def number_of_players():
@@ -76,20 +76,27 @@ class GameJournal(object):
 
         for player in players:
             if players[player] is None:
-                players[player] = get_player_hash(json_request)
+                players[player] = self.get_player_hash(json_request)
 
+    def get_player_hash(self, json_request):
+        return hashlib.md5("{}{}".format(json_request["client_ip"], json_request[
+            "client_port"]).encode("utf-8")).hexdigest()
 
-def get_player_hash(json_request):
-    return hashlib.md5("{}{}".format(json_request["client_ip"], json_request[
-        "client_port"]).encode("utf-8")).hexdigest()
+    def is_current_player(self, json_request):
+        players = self.get_players()
 
+        game = self.get_game_in_progress()
+        return players[get_current_player(game)] == self.get_player_hash(
+            json_request)
 
-def is_current_player(game, json_request):
-    current_game = GameJournal()
-    players = current_game.get_players()
+    def is_player_in_game(self, json_request):
+        game = GameJournal()
+        players = game.get_players()
 
-    return players[get_current_player(game)] == get_player_hash(
-        json_request)
+        for i in players:
+            if players[i] == self.get_player_hash(json_request):
+                return True
+        return False
 
 
 def get_current_player(game):
@@ -105,13 +112,3 @@ def has_enough_players():
             return False
 
     return True
-
-
-def is_player_in_game(json_request):
-    game = GameJournal()
-    players = game.get_players()
-
-    for i in players:
-        if players[i] == get_player_hash(json_request):
-            return True
-    return False
