@@ -31,19 +31,20 @@ class GameJournal(object):
     def __init__(self):
         pass
 
-    def initialize(self, json_request, number_of_players):
+    def initialize(self, json_request):
+
         players = {}
-        for i in range(number_of_players):
+        for i in range(json_request["players"]):
             players[i] = None
 
         players[0] = get_player_hash(json_request)
         self.record_players(players)
 
-        def player_numbers():
-            return number_of_players
+        def number_of_players():
+            return json_request["players"]
 
         game = IRefuse()
-        game.setup(player_numbers)
+        game.setup(number_of_players)
         self.record_game(self.serialize_game(game))
 
     def record_game(self, game):
@@ -69,17 +70,6 @@ class GameJournal(object):
 
     def serialize_game(self, game):
         return json.dumps(game, default=lambda o: o.__dict__)
-
-
-def initialize_players(json_request, number_of_players):
-    players = {}
-    for i in range(number_of_players()):
-        players[i] = None
-
-    players[0] = get_player_hash(json_request)
-
-    game = GameJournal()
-    game.record_players(players)
 
 
 def add_player_to_game(json_request):

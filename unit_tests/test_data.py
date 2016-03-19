@@ -39,7 +39,7 @@ class TestGameJournal(unittest.TestCase):
         with open(get_input(START_GAME)) as data_file:
             data = json.load(data_file)
             game = GameJournal()
-            game.initialize(data, 4)
+            game.initialize(data)
 
         with open(get_expected(START_GAME)) as expected:
             expected_json = json.load(expected)

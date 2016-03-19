@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from abc import ABCMeta, abstractmethod
 
 from irefuse.irefuse import IRefuse
-from persistence.data import GameJournal, initialize_players, add_player_to_game, \
+from persistence.data import GameJournal, add_player_to_game, \
     is_current_player, has_enough_players, is_player_in_game
 
 GAME_HAS_NOT_BEEN_STARTED = '{ "response": 200, "message": "No game has been started" }'
@@ -65,15 +65,9 @@ class StartRequestHandler(RequestHandler):
         return current_game
 
     def setup_game(self, json_request):
-        def number_of_players():
-            return json_request["players"]
-
-        initialize_players(json_request, number_of_players)
-
-        irefuse = IRefuse()
-        irefuse.setup(number_of_players)
         game = GameJournal()
-        return game.serialize_game(irefuse)
+        game.initialize(json_request)
+        return game.serialize_game(game.get_game_in_progress())
 
 
 class JoinRequestHandler(RequestHandler):
