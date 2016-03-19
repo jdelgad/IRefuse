@@ -1,11 +1,23 @@
 """
 Module is responsible for testing of game/business logic behind 'I Refuse.'
+Copyright (c) 2016 Jacob Delgado,
+This file is part of I Refuse.
 
- Author: Jacob Delgado
- Date: Mar 6, 2016
+'I Refuse' is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-import game.irefuse
-import game.player
+import irefuse.irefuse
+import irefuse.player
 import unittest
 
 
@@ -15,7 +27,7 @@ class TestIRefuse(unittest.TestCase):
             return 2
 
         try:
-            game.irefuse.Game.setup_players(input_func)
+            irefuse.irefuse.IRefuse.setup_players(input_func)
             self.fail("2 players are not allowed")
         except AssertionError:
             pass
@@ -25,7 +37,7 @@ class TestIRefuse(unittest.TestCase):
             return 3
 
         try:
-            players = game.irefuse.Game.setup_players(input_func)
+            players = irefuse.irefuse.IRefuse.setup_players(input_func)
             self.assertEquals(3, len(players.players))
         except AssertionError:
             self.fail("3 players are allowed")
@@ -35,7 +47,7 @@ class TestIRefuse(unittest.TestCase):
             return 5
 
         try:
-            players = game.irefuse.Game.setup_players(input_func)
+            players = irefuse.irefuse.IRefuse.setup_players(input_func)
             self.assertEquals(5, len(players.players))
         except AssertionError:
             self.fail("5 players are allowed")
@@ -45,14 +57,14 @@ class TestIRefuse(unittest.TestCase):
             return 6
 
         try:
-            game.irefuse.Game.setup_players(input_func)
+            irefuse.irefuse.IRefuse.setup_players(input_func)
             self.fail("6 players are not allowed")
         except AssertionError:
             pass
 
     def test_setup_cards(self):
-        cards_one = game.irefuse.Game.setup_cards()
-        cards_two = game.irefuse.Game.setup_cards()
+        cards_one = irefuse.irefuse.IRefuse.setup_cards()
+        cards_two = irefuse.irefuse.IRefuse.setup_cards()
         cards_one = set(cards_one)
         sorted_cards_one = list(sorted(cards_one))
         cards_two = set(cards_two)
@@ -69,8 +81,8 @@ class TestIRefuse(unittest.TestCase):
         def input_func():
             return inputs.pop(0)
 
-        game_irefuse = game.irefuse.Game()
-        game_irefuse.players = game.player.Players(1)
+        game_irefuse = irefuse.irefuse.IRefuse()
+        game_irefuse.players = irefuse.player.Players(1)
         user_took_card = game_irefuse.prompt_for_action(3, 2, input_func,
                                                         game_irefuse.players[0])
         self.assertEquals(1, user_took_card)
@@ -81,8 +93,8 @@ class TestIRefuse(unittest.TestCase):
         def input_func():
             return inputs.pop(0)
 
-        game_irefuse = game.irefuse.Game()
-        game_irefuse.players = game.player.Players(1)
+        game_irefuse = irefuse.irefuse.IRefuse()
+        game_irefuse.players = irefuse.player.Players(1)
         user_took_card = game_irefuse.prompt_for_action(3, 2, input_func,
                                                         game_irefuse.players[0])
         self.assertEquals(2, user_took_card)
@@ -91,8 +103,8 @@ class TestIRefuse(unittest.TestCase):
         def input_func():
             return 0
 
-        game_irefuse = game.irefuse.Game()
-        game_irefuse.players = game.player.Players(1)
+        game_irefuse = irefuse.irefuse.IRefuse()
+        game_irefuse.players = irefuse.player.Players(1)
 
         game_irefuse.players[0].tokens = 0
         user_took_card = game_irefuse.prompt_for_action(3, 5, input_func,
@@ -100,8 +112,8 @@ class TestIRefuse(unittest.TestCase):
         self.assertEquals(2, user_took_card)
 
     def test_flip_card(self):
-        game_irefuse = game.irefuse.Game()
-        game_irefuse.cards = game.irefuse.Game.setup_cards()
+        game_irefuse = irefuse.irefuse.IRefuse()
+        game_irefuse.cards = irefuse.irefuse.IRefuse.setup_cards()
         number_of_cards = len(game_irefuse.cards)
         self.assertEquals(24, number_of_cards)
         top_of_deck = game_irefuse.cards[23]
@@ -110,15 +122,15 @@ class TestIRefuse(unittest.TestCase):
         self.assertEquals(23, len(game_irefuse.cards))
 
     def test_flip_entire_deck(self):
-        game_irefuse = game.irefuse.Game()
-        game_irefuse.cards = game.irefuse.Game.setup_cards()
+        game_irefuse = irefuse.irefuse.IRefuse()
+        game_irefuse.cards = irefuse.irefuse.IRefuse.setup_cards()
         self.assertEquals(24, len(game_irefuse.cards))
         for i in range(24):
             game_irefuse.flip_card()
 
     def test_flip_no_more_cards(self):
-        game_irefuse = game.irefuse.Game()
-        game_irefuse.cards = game.irefuse.Game.setup_cards()
+        game_irefuse = irefuse.irefuse.IRefuse()
+        game_irefuse.cards = irefuse.irefuse.IRefuse.setup_cards()
         self.assertEquals(24, len(game_irefuse.cards))
         for i in range(24):
             game_irefuse.flip_card()
@@ -139,7 +151,7 @@ class TestIRefuse(unittest.TestCase):
         def three_players():
             return 3
 
-        game_irefuse = game.irefuse.Game()
+        game_irefuse = irefuse.irefuse.IRefuse()
         game_irefuse.setup(three_players)
         game_irefuse.cards = [3, 5]
 
@@ -175,7 +187,7 @@ class TestIRefuse(unittest.TestCase):
         def four_players():
             return 4
 
-        game_irefuse = game.irefuse.Game()
+        game_irefuse = irefuse.irefuse.IRefuse()
         game_irefuse.setup(four_players)
         game_irefuse.cards = [3, 5, 6, 7]
 
@@ -218,7 +230,7 @@ class TestIRefuse(unittest.TestCase):
         def three_players():
             return 3
 
-        game_irefuse = game.irefuse.Game()
+        game_irefuse = irefuse.irefuse.IRefuse()
         game_irefuse.setup(three_players)
 
         game_irefuse.players[0].tokens = 2
@@ -239,7 +251,7 @@ class TestIRefuse(unittest.TestCase):
         def three_players():
             return 3
 
-        game_irefuse = game.irefuse.Game()
+        game_irefuse = irefuse.irefuse.IRefuse()
         game_irefuse.setup(three_players)
 
         game_irefuse.players[0].tokens = 2

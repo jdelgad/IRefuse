@@ -1,4 +1,4 @@
-#!/usr/bin/python -tt
+#!/usr/bin/python
 """
 Copyright (c) 2016 Jacob Delgado,
 This file is part of I Refuse.
@@ -16,24 +16,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-import irefuse.irefuse
+from http.server import HTTPServer
+
+from restful.endpoint import IRefuseHTTPRESTEndPoint
 
 
 def main():
-    """
-    Main function
-
-    :return: None
-    """
-    game_play = irefuse.irefuse.IRefuse()
-    game_play.setup(input)
-    winners = game_play.play(input)
-
-    print("\n------------")
-    print("The winners are:")
-    for winner in winners:
-        print(winner)
-
+    ip = "127.0.0.1"
+    port = 8000
+    server_address = (ip, 8000)
+    httpd = HTTPServer(server_address, IRefuseHTTPRESTEndPoint)
+    print("Running server on {}:{}".format(ip, port))
+    httpd.serve_forever()
 
 if __name__ == "__main__":
     main()

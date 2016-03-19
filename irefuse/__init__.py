@@ -1,4 +1,3 @@
-#!/usr/bin/python -tt
 """
 Copyright (c) 2016 Jacob Delgado,
 This file is part of I Refuse.
@@ -16,24 +15,3 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-import irefuse.irefuse
-
-
-def main():
-    """
-    Main function
-
-    :return: None
-    """
-    game_play = irefuse.irefuse.IRefuse()
-    game_play.setup(input)
-    winners = game_play.play(input)
-
-    print("\n------------")
-    print("The winners are:")
-    for winner in winners:
-        print(winner)
-
-
-if __name__ == "__main__":
-    main()
