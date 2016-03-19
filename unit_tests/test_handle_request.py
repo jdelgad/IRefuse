@@ -44,12 +44,11 @@ class TestStartRequestHandler(unittest.TestCase):
             game = self.request_handler.handle(data)
 
             # cards must be zeroed out since they are randomized
-            output_json = json.loads(game)
-            output_json["cards"] = []
+            game["cards"] = []
 
             with open(get_expected(START_GAME)) as expected:
                 expected_json = json.load(expected)
-            self.assertEquals(output_json, expected_json)
+            self.assertEquals(game, expected_json)
 
     def test_handle_start_game_but_game_in_progress(self):
         shutil.copy(get_expected(START_GAME), CURRENT_GAME_JSON)

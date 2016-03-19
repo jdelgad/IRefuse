@@ -16,9 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import json
-import os
 import unittest
-
 import shutil
 
 from persistence.data import GameJournal
@@ -28,6 +26,7 @@ from unit_tests.utfiles import remove_current_game, remove_players_list, \
 CURRENT_GAME_JSON = "current_game.json"
 PLAYERS_JSON = "players.json"
 START_GAME = "start_game"
+PLAYERS = "players"
 
 
 class TestGameJournal(unittest.TestCase):
@@ -38,16 +37,28 @@ class TestGameJournal(unittest.TestCase):
     def test_initialization_success(self):
         with open(get_input(START_GAME)) as data_file:
             data = json.load(data_file)
-            game = GameJournal()
-            game.initialize(data)
+        game = GameJournal()
+        game.initialize(data)
 
         with open(get_expected(START_GAME)) as expected:
             expected_json = json.load(expected)
-        with open(os.path.join(get_current_directory(),
-                               "..", "current_game.json")) \
-                as current:
+        with open(CURRENT_GAME_JSON) as current:
             game_json = json.load(current)
-            game_json["cards"] = []
+        game_json["cards"] = []
         self.assertEquals(game_json, expected_json)
+
+    def test_initialization_fails(self):
+        shutil.copy(get_expected(START_GAME), CURRENT_GAME_JSON)
+        shutil.copy(get_expected(PLAYERS), PLAYERS_JSON)
+
+        with open(get_input(START_GAME)) as data_file:
+            data = json.load(data_file)
+        game = GameJournal()
+        try:
+            game.initialize(data)
+            self.fail("expected failure - only 1 game is allowed currently")
+        except BaseException:
+            pass
+
 
 

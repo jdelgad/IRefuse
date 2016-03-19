@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+import json
 import random
 import sys
 
@@ -149,3 +150,6 @@ class IRefuse(object):
         :return: The newest card to be face up.
         """
         return self.cards.pop()
+
+    def serialize(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True)

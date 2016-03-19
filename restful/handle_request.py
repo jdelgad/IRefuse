@@ -56,7 +56,6 @@ class StartRequestHandler(RequestHandler):
 
     def start_game(self, json_request):
         current_game = self.setup_game(json_request)
-        self.game.record_game(current_game)
 
         self.game.add_player_to_game(json_request)
 
@@ -64,7 +63,7 @@ class StartRequestHandler(RequestHandler):
 
     def setup_game(self, json_request):
         self.game.initialize(json_request)
-        return self.game.serialize_game(self.game.get_game_in_progress())
+        return self.game.get_game_in_progress()
 
 
 class JoinRequestHandler(RequestHandler):
