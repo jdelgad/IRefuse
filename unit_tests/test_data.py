@@ -15,10 +15,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+import json
+import os
 import unittest
 
+import shutil
+
 from persistence.data import GameJournal
-from unit_tests.utfiles import remove_current_game, remove_players_list
+from unit_tests.utfiles import remove_current_game, remove_players_list, \
+    get_expected, get_input, get_current_directory
+
+CURRENT_GAME_JSON = "current_game.json"
+PLAYERS_JSON = "players.json"
+START_GAME = "start_game"
 
 
 class TestGameJournal(unittest.TestCase):
@@ -26,8 +35,18 @@ class TestGameJournal(unittest.TestCase):
         remove_current_game()
         remove_players_list()
 
-    def test_initialize_record(self):
-        game = GameJournal()
-        game.initialize(3)
+    def test_initialization_success(self):
+        with open(get_input(START_GAME)) as data_file:
+            data = json.load(data_file)
+            game = GameJournal()
+            game.initialize(data, 4)
+
+        with open(get_expected(START_GAME)) as expected:
+            expected_json = json.load(expected)
+        with open(os.path.join(get_current_directory(), "current_game.json")) \
+                as current:
+            game_json = json.load(current)
+            game_json["cards"] = []
+        self.assertEquals(game_json, expected_json)
 
 

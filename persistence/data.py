@@ -17,10 +17,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-# json files representing the current game
 import hashlib
 import json
 import os
+
+from irefuse.irefuse import IRefuse
 
 CURRENT_GAME_JSON = "current_game.json"
 PLAYERS_JSON = "players.json"
@@ -29,6 +30,21 @@ PLAYERS_JSON = "players.json"
 class GameJournal(object):
     def __init__(self):
         pass
+
+    def initialize(self, json_request, number_of_players):
+        players = {}
+        for i in range(number_of_players):
+            players[i] = None
+
+        players[0] = get_player_hash(json_request)
+        self.record_players(players)
+
+        def player_numbers():
+            return number_of_players
+
+        game = IRefuse()
+        game.setup(player_numbers)
+        self.record_game(self.serialize_game(game))
 
     def record_game(self, game):
         with open(CURRENT_GAME_JSON, "w") as current:
