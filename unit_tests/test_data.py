@@ -43,7 +43,8 @@ class TestGameJournal(unittest.TestCase):
 
         with open(get_expected(START_GAME)) as expected:
             expected_json = json.load(expected)
-        with open(os.path.join(get_current_directory(), "current_game.json")) \
+        with open(os.path.join(get_current_directory(),
+                               "..", "current_game.json")) \
                 as current:
             game_json = json.load(current)
             game_json["cards"] = []
