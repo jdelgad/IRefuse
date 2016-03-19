@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/jdelgad/IRefuse.svg?branch=master)](https://travis-ci.org/jdelgad/IRefuse)
-[![codecov.io](https://codecov.io/github/jdelgad/Irefuse-ruby/coverage.svg?branch=master)](https://codecov.io/github/codecov/codecov-ruby?branch=master)
+[![codecov.io](https://codecov.io/github/jdelgad/IRefuse/coverage.svg?branch=master)](https://codecov.io/github/jdelgad/IRefuse?branch=master)
 
 # I Refuse
 
