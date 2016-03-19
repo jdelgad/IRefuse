@@ -26,7 +26,7 @@ CURRENT_GAME_JSON = "current_game.json"
 PLAYERS_JSON = "players.json"
 
 
-class Game(object):
+class GameJournal(object):
     def __init__(self):
         pass
 
@@ -62,12 +62,12 @@ def initialize_players(json_request, number_of_players):
 
     players[0] = get_player_hash(json_request)
 
-    game = Game()
+    game = GameJournal()
     game.record_players(players)
 
 
 def add_player_to_game(json_request):
-    game = Game()
+    game = GameJournal()
     players = game.get_players()
 
     for player in players:
@@ -81,7 +81,7 @@ def get_player_hash(json_request):
 
 
 def is_current_player(game, json_request):
-    current_game = Game()
+    current_game = GameJournal()
     players = current_game.get_players()
 
     return players[get_current_player(game)] == get_player_hash(
@@ -93,7 +93,7 @@ def get_current_player(game):
 
 
 def has_enough_players():
-    game = Game()
+    game = GameJournal()
     players = game.get_players()
 
     for i in players:
@@ -104,7 +104,7 @@ def has_enough_players():
 
 
 def is_player_in_game(json_request):
-    game = Game()
+    game = GameJournal()
     players = game.get_players()
 
     for i in players:
