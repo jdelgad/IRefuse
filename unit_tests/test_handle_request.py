@@ -24,16 +24,20 @@ from restful.handle_request import JoinRequestHandler, \
     StatusRequestHandler, StartRequestHandler
 
 
+def get_current_directory():
+    return os.path.dirname(os.path.realpath(__file__))
+
+
 def get_input(file):
-    return "requests/input/{}.json".format(file)
+    return "{}/requests/input/{}.json".format(get_current_directory(), file)
 
 
 def get_output(file):
-    return "requests/output/{}.json".format(file)
+    return "{}/requests/output/{}.json".format(get_current_directory(), file)
 
 
 def get_expected(file):
-    return "requests/expected/{}.json".format(file)
+    return "{}/requests/expected/{}.json".format(get_current_directory(), file)
 
 
 def remove_players_list():
