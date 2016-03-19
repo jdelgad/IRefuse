@@ -85,8 +85,7 @@ class GameJournal(object):
     def is_current_player(self, json_request):
         players = self.get_players()
 
-        game = self.get_game_in_progress()
-        return players[get_current_player(game)] == self.get_player_hash(
+        return players[self.get_current_player()] == self.get_player_hash(
             json_request)
 
     def is_player_in_game(self, json_request):
@@ -98,17 +97,14 @@ class GameJournal(object):
                 return True
         return False
 
+    def get_current_player(self):
+        return str(self.get_game_in_progress()["players"]["index"])
 
-def get_current_player(game):
-    return str(game["players"]["index"])
+    def has_enough_players(self):
+        players = self.get_players()
 
+        for i in players:
+            if players[i] is None:
+                return False
 
-def has_enough_players():
-    game = GameJournal()
-    players = game.get_players()
-
-    for i in players:
-        if players[i] is None:
-            return False
-
-    return True
+        return True

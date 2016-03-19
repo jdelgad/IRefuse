@@ -17,8 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from abc import ABCMeta, abstractmethod
 
-from persistence.data import GameJournal, \
-    has_enough_players
+from persistence.data import GameJournal
 
 GAME_HAS_NOT_BEEN_STARTED = '{ "response": 200, "message": "No game has been started" }'
 WAITING_FOR_PLAYERS = '{ "response": 200, "message": "Waiting for players" }'
@@ -64,9 +63,8 @@ class StartRequestHandler(RequestHandler):
         return current_game
 
     def setup_game(self, json_request):
-        game = GameJournal()
-        game.initialize(json_request)
-        return game.serialize_game(game.get_game_in_progress())
+        self.game.initialize(json_request)
+        return self.game.serialize_game(self.game.get_game_in_progress())
 
 
 class JoinRequestHandler(RequestHandler):
@@ -77,10 +75,9 @@ class JoinRequestHandler(RequestHandler):
             return NO_GAME_IN_PROGRESS
 
     def handle_join_after_start(self, json_request):
-        game = GameJournal()
-        if game.is_player_in_game(json_request):
+        if self.game.is_player_in_game(json_request):
             return PLAYER_IS_ALREADY_IN_GAME
-        elif has_enough_players():
+        elif self.game.has_enough_players():
             return GAME_IS_ALREADY_FULL_
         else:
             game = GameJournal()
@@ -91,7 +88,7 @@ class JoinRequestHandler(RequestHandler):
 class StatusRequestHandler(RequestHandler):
     def handle(self, json_request):
         if self.game.is_started():
-            if has_enough_players():
+            if self.game.has_enough_players():
                 if self.game.is_current_player(json_request):
                     return PLAYERS_TURN
                 else:
