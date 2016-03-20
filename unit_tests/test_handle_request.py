@@ -33,6 +33,15 @@ PLAYERS = "players"
 STATUS = "status"
 
 
+def get_game(request_handler, filename):
+    with open(get_input(filename)) as data_file:
+        data = json.load(data_file)
+        game = request_handler.handle(data)
+        # cards must be zeroed out since they are randomized
+        game["cards"] = []
+    return game
+
+
 class TestStartRequestHandler(unittest.TestCase):
 
     def setUp(self):
@@ -41,11 +50,7 @@ class TestStartRequestHandler(unittest.TestCase):
         self.request_handler = StartRequestHandler()
 
     def test_handle_start_game(self):
-        with open(get_input(START_GAME)) as data_file:
-            data = json.load(data_file)
-            game = self.request_handler.handle(data)
-            # cards must be zeroed out since they are randomized
-            game["cards"] = []
+        game = get_game(self.request_handler, START_GAME)
 
         with open(get_expected(START_GAME)) as expected:
             expected_json = json.load(expected)
@@ -74,12 +79,7 @@ class TestJoinRequestHandler(unittest.TestCase):
     def test_handle_join_game_allowed(self):
         shutil.copy(get_expected(PLAYERS), PLAYERS_JSON)
         shutil.copy(get_expected(START_GAME), CURRENT_GAME_JSON)
-        with open(get_input(JOIN_GAME)) as data_file:
-            data = json.load(data_file)
-            game = self.request_handler.handle(data)
-
-            # cards must be zeroed out since they are randomized
-            game["cards"] = []
+        game = get_game(self.request_handler, JOIN_GAME)
 
         with open(get_expected(JOIN_GAME)) as expected:
             expected_json = json.load(expected)
