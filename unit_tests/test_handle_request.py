@@ -22,7 +22,7 @@ import unittest
 from restful.handle_request import JoinRequestHandler, \
     StatusRequestHandler, StartRequestHandler
 from unit_tests.utfiles import get_input, get_expected, remove_players_list, \
-    remove_current_game
+    remove_current_game, get_expected_json
 
 CURRENT_GAME_JSON = "current_game.json"
 PLAYERS_JSON = "players.json"
@@ -52,8 +52,7 @@ class TestStartRequestHandler(unittest.TestCase):
     def test_handle_start_game(self):
         game = get_game(self.request_handler, START_GAME)
 
-        with open(get_expected(START_GAME)) as expected:
-            expected_json = json.load(expected)
+        expected_json = get_expected_json(START_GAME)
         self.assertEquals(game, expected_json)
 
     def test_handle_start_game_but_game_in_progress(self):
@@ -64,9 +63,7 @@ class TestStartRequestHandler(unittest.TestCase):
 
             output_json = json.loads(game)
 
-        with open(get_expected("start_game_but_game_in_progress")) as \
-                expected:
-            expected_json = json.load(expected)
+        expected_json = get_expected_json("start_game_but_game_in_progress")
         self.assertEquals(output_json, expected_json)
 
 
@@ -81,12 +78,10 @@ class TestJoinRequestHandler(unittest.TestCase):
         shutil.copy(get_expected(START_GAME), CURRENT_GAME_JSON)
         game = get_game(self.request_handler, JOIN_GAME)
 
-        with open(get_expected(JOIN_GAME)) as expected:
-            expected_json = json.load(expected)
+        expected_json = get_expected_json(JOIN_GAME)
         self.assertEquals(game, expected_json)
 
-        with open(get_expected("join_players")) as expected:
-            expected_json = json.load(expected)
+        expected_json = get_expected_json("join_players")
         with open(PLAYERS_JSON) as expected:
             players = json.load(expected)
         self.assertEquals(players, expected_json)
@@ -97,9 +92,7 @@ class TestJoinRequestHandler(unittest.TestCase):
             game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
-        with open(get_expected("join_game_no_game_in_progress")) as \
-                expected:
-            expected_json = json.load(expected)
+        expected_json = get_expected_json("join_game_no_game_in_progress")
         self.assertEquals(output_json, expected_json)
 
     def test_handle_join_but_game_is_full(self):
@@ -110,9 +103,7 @@ class TestJoinRequestHandler(unittest.TestCase):
             game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
-        with open(get_expected("join_game_but_game_is_full")) as \
-                expected:
-            expected_json = json.load(expected)
+        expected_json = get_expected_json("join_game_but_game_is_full")
         self.assertEquals(output_json, expected_json)
 
     def test_handle_join_but_player_already_in_full_game(self):
@@ -124,9 +115,7 @@ class TestJoinRequestHandler(unittest.TestCase):
             game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
-        with open(get_expected("join_player_already_in_full_game")) as \
-                expected:
-            expected_json = json.load(expected)
+        expected_json = get_expected_json("join_player_already_in_full_game")
         self.assertEquals(output_json, expected_json)
 
     def test_handle_join_but_player_already_in_game_waiting(self):
@@ -138,9 +127,7 @@ class TestJoinRequestHandler(unittest.TestCase):
             game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
-        with open(get_expected("join_player_already_in_game_waiting")) as \
-                expected:
-            expected_json = json.load(expected)
+        expected_json = get_expected_json("join_player_already_in_game_waiting")
         self.assertEquals(output_json, expected_json)
 
 
@@ -158,8 +145,7 @@ class TestStatusRequestHandler(unittest.TestCase):
             game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
-        with open(get_expected("status_waiting_to_start")) as expected:
-            expected_json = json.load(expected)
+        expected_json = get_expected_json("status_waiting_to_start")
         self.assertEquals(output_json, expected_json)
 
     def test_handle_status_no_game_in_progress(self):
@@ -168,8 +154,7 @@ class TestStatusRequestHandler(unittest.TestCase):
             game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
-        with open(get_expected("status_no_game_started")) as expected:
-            expected_json = json.load(expected)
+        expected_json = get_expected_json("status_no_game_started")
         self.assertEquals(output_json, expected_json)
 
     def test_handle_status_players_turn(self):
@@ -180,8 +165,7 @@ class TestStatusRequestHandler(unittest.TestCase):
             game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
-        with open(get_expected("status_players_turn")) as expected:
-            expected_json = json.load(expected)
+        expected_json = get_expected_json("status_players_turn")
         self.assertEquals(output_json, expected_json)
 
     def test_handle_status_not_players_turn(self):
@@ -192,6 +176,5 @@ class TestStatusRequestHandler(unittest.TestCase):
             game = self.request_handler.handle(data)
             output_json = json.loads(game)
 
-        with open(get_expected("status_players_no_turn")) as expected:
-            expected_json = json.load(expected)
+        expected_json = get_expected_json("status_players_no_turn")
         self.assertEquals(output_json, expected_json)

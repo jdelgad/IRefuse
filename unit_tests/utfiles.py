@@ -15,6 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+import json
 import os
 
 
@@ -46,3 +47,9 @@ def remove_current_game():
         os.remove("current_game.json")
     except FileNotFoundError:
         pass
+
+
+def get_expected_json(filename):
+    with open(get_expected(filename)) as expected:
+        expected_json = json.load(expected)
+    return expected_json
