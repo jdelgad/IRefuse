@@ -67,10 +67,7 @@ class GameJournal(object):
         self.players.read()
 
     def get_game_in_progress(self):
-        return self.game.game
-
-    def get_players(self):
-        return self.players
+        return self.game.get_game()
 
     def is_started(self):
         return self.game.is_started() \
@@ -121,6 +118,9 @@ class Game(object):
         write_object_to_file(self.CURRENT_GAME_JSON, game.serialize())
         self.read()
 
+    def get_game(self):
+        return self.game
+
 
 class Players(object):
     PLAYERS_JSON = "players.json"
@@ -134,12 +134,6 @@ class Players(object):
             self.players[i] = None
         self.players[0] = get_player_hash(json_request)
         return self.players
-
-    def serialize(self):
-        """
-        Serializes class to json string
-        """
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True)
 
     def add_player(self, json_request):
         for player in sorted(self.players):
