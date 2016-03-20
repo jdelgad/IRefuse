@@ -42,6 +42,14 @@ def get_game(request_handler, filename):
     return game
 
 
+def get_output_json(request_handler, filename):
+    with open(get_input(filename)) as data_file:
+        data = json.load(data_file)
+        game = request_handler.handle(data)
+        output_json = json.loads(game)
+    return output_json
+
+
 class TestStartRequestHandler(unittest.TestCase):
 
     def setUp(self):
@@ -57,12 +65,7 @@ class TestStartRequestHandler(unittest.TestCase):
 
     def test_handle_start_game_but_game_in_progress(self):
         shutil.copy(get_expected(START_GAME), CURRENT_GAME_JSON)
-        with open(get_input(START_GAME)) as data_file:
-            data = json.load(data_file)
-            game = self.request_handler.handle(data)
-
-            output_json = json.loads(game)
-
+        output_json = get_output_json(self.request_handler, START_GAME)
         expected_json = get_expected_json("start_game_but_game_in_progress")
         self.assertEquals(output_json, expected_json)
 
@@ -87,22 +90,14 @@ class TestJoinRequestHandler(unittest.TestCase):
         self.assertEquals(players, expected_json)
 
     def test_handle_join_game_with_none_in_progress(self):
-        with open(get_input(JOIN_GAME)) as data_file:
-            data = json.load(data_file)
-            game = self.request_handler.handle(data)
-            output_json = json.loads(game)
-
+        output_json = get_output_json(self.request_handler, JOIN_GAME)
         expected_json = get_expected_json("join_game_no_game_in_progress")
         self.assertEquals(output_json, expected_json)
 
     def test_handle_join_but_game_is_full(self):
         shutil.copy(get_expected("all_players_in_game"), PLAYERS_JSON)
         shutil.copy(get_expected(START_GAME), CURRENT_GAME_JSON)
-        with open(get_input(JOIN_GAME)) as data_file:
-            data = json.load(data_file)
-            game = self.request_handler.handle(data)
-            output_json = json.loads(game)
-
+        output_json = get_output_json(self.request_handler, JOIN_GAME)
         expected_json = get_expected_json("join_game_but_game_is_full")
         self.assertEquals(output_json, expected_json)
 
@@ -110,11 +105,7 @@ class TestJoinRequestHandler(unittest.TestCase):
         shutil.copy(get_expected("all_players_in_game_join"),
                     PLAYERS_JSON)
         shutil.copy(get_expected(START_GAME), CURRENT_GAME_JSON)
-        with open(get_input(JOIN_GAME)) as data_file:
-            data = json.load(data_file)
-            game = self.request_handler.handle(data)
-            output_json = json.loads(game)
-
+        output_json = get_output_json(self.request_handler, JOIN_GAME)
         expected_json = get_expected_json("join_player_already_in_full_game")
         self.assertEquals(output_json, expected_json)
 
@@ -122,11 +113,7 @@ class TestJoinRequestHandler(unittest.TestCase):
         shutil.copy(get_expected("all_players_in_game_waiting"),
                     PLAYERS_JSON)
         shutil.copy(get_expected(START_GAME), CURRENT_GAME_JSON)
-        with open(get_input(JOIN_GAME)) as data_file:
-            data = json.load(data_file)
-            game = self.request_handler.handle(data)
-            output_json = json.loads(game)
-
+        output_json = get_output_json(self.request_handler, JOIN_GAME)
         expected_json = get_expected_json("join_player_already_in_game_waiting")
         self.assertEquals(output_json, expected_json)
 
@@ -140,41 +127,25 @@ class TestStatusRequestHandler(unittest.TestCase):
     def test_handle_status_waiting_for_players(self):
         shutil.copy(get_expected(PLAYERS), PLAYERS_JSON)
         shutil.copy(get_expected(START_GAME), CURRENT_GAME_JSON)
-        with open(get_input(STATUS)) as data_file:
-            data = json.load(data_file)
-            game = self.request_handler.handle(data)
-            output_json = json.loads(game)
-
+        output_json = get_output_json(self.request_handler, STATUS)
         expected_json = get_expected_json("status_waiting_to_start")
         self.assertEquals(output_json, expected_json)
 
     def test_handle_status_no_game_in_progress(self):
-        with open(get_input(STATUS)) as data_file:
-            data = json.load(data_file)
-            game = self.request_handler.handle(data)
-            output_json = json.loads(game)
-
+        output_json = get_output_json(self.request_handler, STATUS)
         expected_json = get_expected_json("status_no_game_started")
         self.assertEquals(output_json, expected_json)
 
     def test_handle_status_players_turn(self):
         shutil.copy(get_expected("all_players_turn"), PLAYERS_JSON)
         shutil.copy(get_expected(START_GAME), CURRENT_GAME_JSON)
-        with open(get_input(STATUS)) as data_file:
-            data = json.load(data_file)
-            game = self.request_handler.handle(data)
-            output_json = json.loads(game)
-
+        output_json = get_output_json(self.request_handler, STATUS)
         expected_json = get_expected_json("status_players_turn")
         self.assertEquals(output_json, expected_json)
 
     def test_handle_status_not_players_turn(self):
         shutil.copy(get_expected("all_players_no_turn"), PLAYERS_JSON)
         shutil.copy(get_expected(START_GAME), CURRENT_GAME_JSON)
-        with open(get_input(STATUS)) as data_file:
-            data = json.load(data_file)
-            game = self.request_handler.handle(data)
-            output_json = json.loads(game)
-
+        output_json = get_output_json(self.request_handler, STATUS)
         expected_json = get_expected_json("status_players_no_turn")
         self.assertEquals(output_json, expected_json)

@@ -49,6 +49,12 @@ def remove_current_game():
         pass
 
 
+def get_json(filename):
+    with open(filename) as current:
+        game_json = json.load(current)
+    return game_json
+
+
 def get_expected_json(filename):
     with open(get_expected(filename)) as expected:
         expected_json = json.load(expected)
