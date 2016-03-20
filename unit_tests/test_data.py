@@ -21,7 +21,7 @@ import shutil
 
 from persistence.data import GameJournal
 from unit_tests.utfiles import remove_current_game, remove_players_list, \
-    get_expected, get_input
+    get_expected, get_input, get_expected_json, get_json
 
 CURRENT_GAME_JSON = "current_game.json"
 PLAYERS_JSON = "players.json"
@@ -40,10 +40,8 @@ class TestGameJournal(unittest.TestCase):
         game = GameJournal()
         game.start(data)
 
-        with open(get_expected(START_GAME)) as expected:
-            expected_json = json.load(expected)
-        with open(CURRENT_GAME_JSON) as current:
-            game_json = json.load(current)
+        expected_json = get_expected_json(START_GAME)
+        game_json = get_json(CURRENT_GAME_JSON)
         game_json["cards"] = []
         self.assertEquals(game_json, expected_json)
 
@@ -66,16 +64,12 @@ class TestGameJournal(unittest.TestCase):
         game = GameJournal()
         game.read()
 
-        with open(get_expected(START_GAME)) as expected:
-            expected_json = json.load(expected)
-        with open(CURRENT_GAME_JSON) as current:
-            game_json = json.load(current)
+        expected_json = get_expected_json(START_GAME)
+        game_json = get_json(CURRENT_GAME_JSON)
         self.assertEquals(expected_json, game_json)
 
-        with open(get_expected(PLAYERS)) as expected:
-            expected_json = json.load(expected)
-        with open(PLAYERS_JSON) as current:
-            players_json = json.load(current)
+        expected_json = get_expected_json(PLAYERS)
+        players_json = get_json(PLAYERS_JSON)
         self.assertEquals(expected_json, players_json)
 
     def test_read_fails(self):
@@ -85,9 +79,3 @@ class TestGameJournal(unittest.TestCase):
             self.fail("no game should have started")
         except FileNotFoundError:
             pass
-
-
-
-
-
-
