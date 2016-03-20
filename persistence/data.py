@@ -98,9 +98,11 @@ class GameJournal(object):
     def add_player_to_game(self, json_request):
         players = self.get_players()
 
-        for player in players:
+        for player in sorted(players):
             if players[player] is None:
                 players[player] = self.__get_player_hash(json_request)
+                self.__record_players(players)
+                break
 
     def __get_player_hash(self, json_request):
         return hashlib.md5("{}{}".format(json_request["client_ip"], json_request[
