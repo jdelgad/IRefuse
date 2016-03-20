@@ -46,10 +46,9 @@ def get_player_hash(json_request):
 
 
 class GameJournal(object):
-    CURRENT_GAME_JSON = "current_game.json"
 
     def __init__(self):
-        self.game = None
+        self.game = Game()
         self.players = Players()
 
     def start(self, json_request):
@@ -57,48 +56,35 @@ class GameJournal(object):
             raise AssertionError("only 1 game allowed at a single time")
 
         self.players.initialize(json_request)
-        self.__initialize_game(json_request)
+        self.game.initialize(json_request)
         self.__record()
         self.read()
 
     def read(self):
         if not self.is_started():
             raise FileNotFoundError("no game started")
-        self.game = read_json_from_file(self.CURRENT_GAME_JSON)
+        self.game.read()
         self.players.read()
 
     def get_game_in_progress(self):
-        return self.game
+        return self.game.game
 
     def get_players(self):
         return self.players
 
     def is_started(self):
-        return os.path.exists(self.CURRENT_GAME_JSON) \
+        return self.game.is_started() \
                or self.players.is_active()
-
-    def __initialize_game(self, json_request):
-        def number_of_players():
-            return json_request["players"]
-
-        game = IRefuse()
-        game.setup(number_of_players)
-        self.game = game.serialize()
 
     def __record(self):
         self.players.record()
-        self.__record_game()
-
-    def __record_game(self):
-        write_json_to_file(self.CURRENT_GAME_JSON, self.game)
+        self.game.record()
 
     def add_player_to_game(self, json_request):
         self.players.add_player(json_request)
 
     def is_current_player(self, json_request):
-        players = self.get_players()
-
-        return players.get_player(self.__get_current_player()) == \
+        return self.players.get_player(self.__get_current_player()) == \
             get_player_hash(json_request)
 
     def is_player_in_game(self, json_request):
@@ -109,6 +95,31 @@ class GameJournal(object):
 
     def is_full(self):
         return self.players.is_full()
+
+
+class Game(object):
+    CURRENT_GAME_JSON = "current_game.json"
+
+    def __init__(self):
+        self.game = None
+
+    def read(self):
+        self.game = read_json_from_file(self.CURRENT_GAME_JSON)
+
+    def is_started(self):
+        return os.path.exists(self.CURRENT_GAME_JSON)
+
+    def record(self):
+        write_json_to_file(self.CURRENT_GAME_JSON, self.game)
+
+    def initialize(self, json_request):
+        def number_of_players():
+            return json_request["players"]
+
+        game = IRefuse()
+        game.setup(number_of_players)
+        write_object_to_file(self.CURRENT_GAME_JSON, game.serialize())
+        self.read()
 
 
 class Players(object):
