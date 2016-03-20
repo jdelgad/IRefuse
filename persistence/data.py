@@ -23,88 +23,112 @@ import os
 
 from irefuse.irefuse import IRefuse
 
-CURRENT_GAME_JSON = "current_game.json"
-PLAYERS_JSON = "players.json"
+
+def write_object_to_file(filename, obj):
+    with open(filename, "w") as current:
+        json.dump(obj, current)
+
+
+def write_json_to_file(filename, obj):
+    with open(filename, "w") as current:
+        current.write(obj)
+
+
+def read_json_from_file(filename):
+    with open(filename, "r") as game:
+        return json.loads(game.readlines()[-1])
 
 
 class GameJournal(object):
+    CURRENT_GAME_JSON = "current_game.json"
+    PLAYERS_JSON = "players.json"
+
     def __init__(self):
-        pass
+        self.game = None
+        self.players = None
 
-    def initialize(self, json_request):
+    def start(self, json_request):
+        if self.is_started():
+            raise AssertionError("only 1 game allowed at a single time")
 
-        players = {}
-        for i in range(json_request["players"]):
-            players[i] = None
+        self.__initialize_players(json_request)
+        self.__initialize_game(json_request)
+        self.__record()
+        self.read()
 
-        players[0] = self.get_player_hash(json_request)
-        self.record_players(players)
+    def read(self):
+        if not self.is_started():
+            raise FileNotFoundError("no game started")
+        self.game = read_json_from_file(self.CURRENT_GAME_JSON)
+        self.players = read_json_from_file(self.PLAYERS_JSON)
 
+    def get_game_in_progress(self):
+        return self.game
+
+    def get_players(self):
+        return self.players
+
+    def is_started(self):
+        return os.path.exists(self.CURRENT_GAME_JSON) \
+               or os.path.exists(self.PLAYERS_JSON)
+
+    def __initialize_game(self, json_request):
         def number_of_players():
             return json_request["players"]
 
         game = IRefuse()
         game.setup(number_of_players)
-        self.record_game(self.serialize_game(game))
+        self.game = game.serialize()
 
-    def record_game(self, game):
-        with open(CURRENT_GAME_JSON, "w") as current:
-            current.write(game)
+    def __initialize_players(self, json_request):
+        self.players = {}
+        for i in range(json_request["players"]):
+            self.players[i] = None
+        self.players[0] = self.__get_player_hash(json_request)
+        return self.players
 
-    def record_players(self, players):
-        with open(PLAYERS_JSON, "w") as game:
-            json.dump(players, game)
+    def __record(self):
+        self.__record_players()
+        self.__record_game()
 
-    def get_players(self):
-        with open(PLAYERS_JSON, "r") as game:
-            players = json.loads(game.readlines()[0])
-        return players
+    def __record_game(self):
+        write_json_to_file(self.CURRENT_GAME_JSON, self.game)
 
-    def is_started(self):
-        return os.path.exists(CURRENT_GAME_JSON) or os.path.exists(PLAYERS_JSON)
-
-    def get_game_in_progress(self):
-        with open(CURRENT_GAME_JSON, "r") as game:
-            current_game = json.loads(game.readlines()[-1])
-        return current_game
-
-    def serialize_game(self, game):
-        return json.dumps(game, default=lambda o: o.__dict__)
+    def __record_players(self):
+        write_object_to_file(self.PLAYERS_JSON, self.players)
 
     def add_player_to_game(self, json_request):
-        players = self.get_players()
+        for player in sorted(self.players):
+            if self.players[player] is None:
+                self.players[player] = self.__get_player_hash(json_request)
+                self.__record_players()
+                break
 
-        for player in players:
-            if players[player] is None:
-                players[player] = self.get_player_hash(json_request)
-
-    def get_player_hash(self, json_request):
-        return hashlib.md5("{}{}".format(json_request["client_ip"], json_request[
-            "client_port"]).encode("utf-8")).hexdigest()
+    @staticmethod
+    def __get_player_hash(json_request):
+        return hashlib.md5("{}{}".format(json_request["client_ip"],
+                                         json_request["client_port"])
+                           .encode("utf-8")).hexdigest()
 
     def is_current_player(self, json_request):
         players = self.get_players()
 
-        return players[self.get_current_player()] == self.get_player_hash(
+        return players[self.__get_current_player()] == self.__get_player_hash(
             json_request)
 
     def is_player_in_game(self, json_request):
-        game = GameJournal()
-        players = game.get_players()
+        players = self.get_players()
 
-        for i in players:
-            if players[i] == self.get_player_hash(json_request):
+        for i in self.players:
+            if players[i] == self.__get_player_hash(json_request):
                 return True
         return False
 
-    def get_current_player(self):
+    def __get_current_player(self):
         return str(self.get_game_in_progress()["players"]["index"])
 
     def has_enough_players(self):
-        players = self.get_players()
-
-        for i in players:
-            if players[i] is None:
+        for i in self.players:
+            if self.players[i] is None:
                 return False
-
         return True
