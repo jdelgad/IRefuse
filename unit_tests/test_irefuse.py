@@ -21,44 +21,47 @@ import irefuse.player
 import unittest
 
 
+def player_takes_action(inputs):
+    def input_func():
+        return inputs.pop(0)
+
+    game_irefuse = irefuse.irefuse.IRefuse()
+    game_irefuse.players = irefuse.player.Players(1)
+    user_took_card = game_irefuse.prompt_for_action(3, 2, input_func,
+                                                    game_irefuse.players[0])
+    return user_took_card
+
+
 class TestIRefuse(unittest.TestCase):
     def test_two_players(self):
-        def input_func():
-            return 2
-
-        try:
-            irefuse.irefuse.IRefuse.setup_players(input_func)
-            self.fail("2 players are not allowed")
-        except AssertionError:
-            pass
+        self.number_of_players_disallowed(6)
 
     def test_three_players(self):
-        def input_func():
-            return 3
-
-        try:
-            players = irefuse.irefuse.IRefuse.setup_players(input_func)
-            self.assertEquals(3, len(players.players))
-        except AssertionError:
-            self.fail("3 players are allowed")
+        self.number_of_players_allowed(3)
 
     def test_five_players(self):
+        self.number_of_players_allowed(5)
+
+    def number_of_players_allowed(self, number):
         def input_func():
-            return 5
+            return number
 
         try:
             players = irefuse.irefuse.IRefuse.setup_players(input_func)
-            self.assertEquals(5, len(players.players))
+            self.assertEquals(number, len(players.players))
         except AssertionError:
-            self.fail("5 players are allowed")
+            self.fail("{} players are allowed".format(number))
 
     def test_six_players(self):
+        self.number_of_players_disallowed(6)
+
+    def number_of_players_disallowed(self, number):
         def input_func():
-            return 6
+            return number
 
         try:
             irefuse.irefuse.IRefuse.setup_players(input_func)
-            self.fail("6 players are not allowed")
+            self.fail("{} players are not allowed".format(number))
         except AssertionError:
             pass
 
@@ -77,26 +80,13 @@ class TestIRefuse(unittest.TestCase):
 
     def test_prompt_for_action_passes(self):
         inputs = [0, 1]
-
-        def input_func():
-            return inputs.pop(0)
-
-        game_irefuse = irefuse.irefuse.IRefuse()
-        game_irefuse.players = irefuse.player.Players(1)
-        user_took_card = game_irefuse.prompt_for_action(3, 2, input_func,
-                                                        game_irefuse.players[0])
+        user_took_card = player_takes_action(inputs)
         self.assertEquals(1, user_took_card)
 
     def test_prompt_for_action_takes_card(self):
         inputs = [0, 2]
 
-        def input_func():
-            return inputs.pop(0)
-
-        game_irefuse = irefuse.irefuse.IRefuse()
-        game_irefuse.players = irefuse.player.Players(1)
-        user_took_card = game_irefuse.prompt_for_action(3, 2, input_func,
-                                                        game_irefuse.players[0])
+        user_took_card = player_takes_action(inputs)
         self.assertEquals(2, user_took_card)
 
     def test_player_no_tokens(self):
