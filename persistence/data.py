@@ -44,15 +44,22 @@ def read_json_from_file(filename):
 
 class GameJournal(object):
     def __init__(self):
-        pass
+        self.game = None
+        self.players = None
 
-    def initialize(self, json_request):
+    def start(self, json_request):
         if self.is_started():
             raise AssertionError("only 1 game allowed at a single time")
 
         players = self.__initialize_players(json_request)
         game = self.__initialize_game(json_request)
         self.__record(players, game)
+
+    def read(self):
+        if not self.is_started():
+            raise FileNotFoundError("no game started")
+        self.game = read_json_from_file(CURRENT_GAME_JSON)
+        self.players = self.get_players()
 
     def get_game_in_progress(self):
         return read_json_from_file(CURRENT_GAME_JSON)
@@ -75,7 +82,7 @@ class GameJournal(object):
         players = {}
         for i in range(json_request["players"]):
             players[i] = None
-        players[0] = self.get_player_hash(json_request)
+        players[0] = self.__get_player_hash(json_request)
         return players
 
     def __record(self, players, game):
@@ -93,24 +100,23 @@ class GameJournal(object):
 
         for player in players:
             if players[player] is None:
-                players[player] = self.get_player_hash(json_request)
+                players[player] = self.__get_player_hash(json_request)
 
-    def get_player_hash(self, json_request):
+    def __get_player_hash(self, json_request):
         return hashlib.md5("{}{}".format(json_request["client_ip"], json_request[
             "client_port"]).encode("utf-8")).hexdigest()
 
     def is_current_player(self, json_request):
         players = self.get_players()
 
-        return players[self.get_current_player()] == self.get_player_hash(
+        return players[self.get_current_player()] == self.__get_player_hash(
             json_request)
 
     def is_player_in_game(self, json_request):
-        game = GameJournal()
-        players = game.get_players()
+        players = self.get_players()
 
-        for i in players:
-            if players[i] == self.get_player_hash(json_request):
+        for i in self.players:
+            if players[i] == self.__get_player_hash(json_request):
                 return True
         return False
 

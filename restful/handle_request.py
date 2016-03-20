@@ -56,19 +56,18 @@ class StartRequestHandler(RequestHandler):
 
     def start_game(self, json_request):
         current_game = self.setup_game(json_request)
-
         self.game.add_player_to_game(json_request)
-
         return current_game
 
     def setup_game(self, json_request):
-        self.game.initialize(json_request)
+        self.game.start(json_request)
         return self.game.get_game_in_progress()
 
 
 class JoinRequestHandler(RequestHandler):
     def handle(self, json_request):
         if self.game.is_started():
+            self.game.read()
             return self.handle_join_after_start(json_request)
         else:
             return NO_GAME_IN_PROGRESS
