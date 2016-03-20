@@ -19,13 +19,17 @@ from abc import ABCMeta, abstractmethod
 
 from persistence.data import GameJournal
 
-GAME_HAS_NOT_BEEN_STARTED = '{ "response": 200, "message": "No game has been started" }'
+GAME_HAS_NOT_BEEN_STARTED = '{ "response": 200, ' \
+                            '"message": "No game has been started" }'
 WAITING_FOR_PLAYERS = '{ "response": 200, "message": "Waiting for players" }'
 NOT_PLAYERS_TURN = '{ "response": 200, "player_turn": false }'
 PLAYERS_TURN = '{ "response": 200, "player_turn": true }'
-GAME_IS_CURRENTLY_IN_PROGRESS = '{ "response": 400, "message": "Game is currently in progress" }'
-GAME_IS_ALREADY_FULL_ = '{ "response": 400, "message": "Game is already full" }'
-PLAYER_IS_ALREADY_IN_GAME = '{ "response": 200, "message": "You are already in game" }'
+GAME_IS_CURRENTLY_IN_PROGRESS = '{ "response": 400, ' \
+                                '"message": "Game is currently in progress" }'
+GAME_IS_ALREADY_FULL_ = '{ "response": 400, ' \
+                        '"message": "Game is already full" }'
+PLAYER_IS_ALREADY_IN_GAME = '{ "response": 200, ' \
+                            '"message": "You are already in game" }'
 NO_GAME_IN_PROGRESS = '{ "response": 400, "message": "No game in progress" }'
 
 
@@ -78,14 +82,14 @@ class JoinRequestHandler(RequestHandler):
         elif self.game.has_enough_players():
             return GAME_IS_ALREADY_FULL_
         else:
-            game = GameJournal()
-            game.add_player_to_game(json_request)
+            self.game.add_player_to_game(json_request)
             return self.game.get_game_in_progress()
 
 
 class StatusRequestHandler(RequestHandler):
     def handle(self, json_request):
         if self.game.is_started():
+            self.game.read()
             if self.game.has_enough_players():
                 if self.game.is_current_player(json_request):
                     return PLAYERS_TURN
