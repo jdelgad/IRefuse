@@ -26,7 +26,7 @@ NOT_PLAYERS_TURN = '{ "response": 200, "player_turn": false }'
 PLAYERS_TURN = '{ "response": 200, "player_turn": true }'
 GAME_IS_CURRENTLY_IN_PROGRESS = '{ "response": 400, ' \
                                 '"message": "Game is currently in progress" }'
-GAME_IS_ALREADY_FULL_ = '{ "response": 400, ' \
+GAME_IS_ALREADY_FULL = '{ "response": 400, ' \
                         '"message": "Game is already full" }'
 PLAYER_IS_ALREADY_IN_GAME = '{ "response": 200, ' \
                             '"message": "You are already in game" }'
@@ -44,7 +44,7 @@ def get_request_handler(json_request):
 
 class RequestHandler(metaclass=ABCMeta):
     def __init__(self):
-        self.game = GameJournal()
+        self.journal = GameJournal()
 
     @abstractmethod
     def handle(self, json_request):
@@ -53,45 +53,45 @@ class RequestHandler(metaclass=ABCMeta):
 
 class StartRequestHandler(RequestHandler):
     def handle(self, json_request):
-        if self.game.is_started():
+        if self.journal.is_started():
             return GAME_IS_CURRENTLY_IN_PROGRESS
 
         return self.start_game(json_request)
 
     def start_game(self, json_request):
         current_game = self.setup_game(json_request)
-        self.game.add_player_to_game(json_request)
+        self.journal.add_player_to_game(json_request)
         return current_game
 
     def setup_game(self, json_request):
-        self.game.start(json_request)
-        return self.game.get_game_in_progress()
+        self.journal.start(json_request)
+        return self.journal.get_game_in_progress()
 
 
 class JoinRequestHandler(RequestHandler):
     def handle(self, json_request):
-        if self.game.is_started():
-            self.game.read()
+        if self.journal.is_started():
+            self.journal.read()
             return self.handle_join_after_start(json_request)
         else:
             return NO_GAME_IN_PROGRESS
 
     def handle_join_after_start(self, json_request):
-        if self.game.is_player_in_game(json_request):
+        if self.journal.is_player_in_game(json_request):
             return PLAYER_IS_ALREADY_IN_GAME
-        elif self.game.has_enough_players():
-            return GAME_IS_ALREADY_FULL_
+        elif self.journal.is_full():
+            return GAME_IS_ALREADY_FULL
         else:
-            self.game.add_player_to_game(json_request)
-            return self.game.get_game_in_progress()
+            self.journal.add_player_to_game(json_request)
+            return self.journal.get_game_in_progress()
 
 
 class StatusRequestHandler(RequestHandler):
     def handle(self, json_request):
-        if self.game.is_started():
-            self.game.read()
-            if self.game.has_enough_players():
-                if self.game.is_current_player(json_request):
+        if self.journal.is_started():
+            self.journal.read()
+            if self.journal.is_full():
+                if self.journal.is_current_player(json_request):
                     return PLAYERS_TURN
                 else:
                     return NOT_PLAYERS_TURN

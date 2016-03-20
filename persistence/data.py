@@ -39,19 +39,24 @@ def read_json_from_file(filename):
         return json.loads(game.readlines()[-1])
 
 
+def get_player_hash(json_request):
+    return hashlib.md5("{}{}".format(json_request["client_ip"],
+                                     json_request["client_port"])
+                       .encode("utf-8")).hexdigest()
+
+
 class GameJournal(object):
     CURRENT_GAME_JSON = "current_game.json"
-    PLAYERS_JSON = "players.json"
 
     def __init__(self):
         self.game = None
-        self.players = None
+        self.players = Players()
 
     def start(self, json_request):
         if self.is_started():
             raise AssertionError("only 1 game allowed at a single time")
 
-        self.__initialize_players(json_request)
+        self.players.initialize(json_request)
         self.__initialize_game(json_request)
         self.__record()
         self.read()
@@ -60,7 +65,7 @@ class GameJournal(object):
         if not self.is_started():
             raise FileNotFoundError("no game started")
         self.game = read_json_from_file(self.CURRENT_GAME_JSON)
-        self.players = read_json_from_file(self.PLAYERS_JSON)
+        self.players.read()
 
     def get_game_in_progress(self):
         return self.game
@@ -70,7 +75,7 @@ class GameJournal(object):
 
     def is_started(self):
         return os.path.exists(self.CURRENT_GAME_JSON) \
-               or os.path.exists(self.PLAYERS_JSON)
+               or self.players.is_active()
 
     def __initialize_game(self, json_request):
         def number_of_players():
@@ -80,55 +85,78 @@ class GameJournal(object):
         game.setup(number_of_players)
         self.game = game.serialize()
 
-    def __initialize_players(self, json_request):
-        self.players = {}
-        for i in range(json_request["players"]):
-            self.players[i] = None
-        self.players[0] = self.__get_player_hash(json_request)
-        return self.players
-
     def __record(self):
-        self.__record_players()
+        self.players.record()
         self.__record_game()
 
     def __record_game(self):
         write_json_to_file(self.CURRENT_GAME_JSON, self.game)
 
-    def __record_players(self):
-        write_object_to_file(self.PLAYERS_JSON, self.players)
-
     def add_player_to_game(self, json_request):
-        for player in sorted(self.players):
-            if self.players[player] is None:
-                self.players[player] = self.__get_player_hash(json_request)
-                self.__record_players()
-                break
-
-    @staticmethod
-    def __get_player_hash(json_request):
-        return hashlib.md5("{}{}".format(json_request["client_ip"],
-                                         json_request["client_port"])
-                           .encode("utf-8")).hexdigest()
+        self.players.add_player(json_request)
 
     def is_current_player(self, json_request):
         players = self.get_players()
 
-        return players[self.__get_current_player()] == self.__get_player_hash(
-            json_request)
+        return players.get_player(self.__get_current_player()) == \
+            get_player_hash(json_request)
 
     def is_player_in_game(self, json_request):
-        players = self.get_players()
-
-        for i in self.players:
-            if players[i] == self.__get_player_hash(json_request):
-                return True
-        return False
+        return self.players.in_game(json_request)
 
     def __get_current_player(self):
         return str(self.get_game_in_progress()["players"]["index"])
 
-    def has_enough_players(self):
+    def is_full(self):
+        return self.players.is_full()
+
+
+class Players(object):
+    PLAYERS_JSON = "players.json"
+
+    def __init__(self):
+        self.players = None
+
+    def initialize(self, json_request):
+        self.players = {}
+        for i in range(json_request["players"]):
+            self.players[i] = None
+        self.players[0] = get_player_hash(json_request)
+        return self.players
+
+    def serialize(self):
+        """
+        Serializes class to json string
+        """
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True)
+
+    def add_player(self, json_request):
+        for player in sorted(self.players):
+            if self.players[player] is None:
+                self.players[player] = get_player_hash(json_request)
+                self.record()
+                break
+
+    def record(self):
+        write_object_to_file(self.PLAYERS_JSON, self.players)
+
+    def is_full(self):
         for i in self.players:
             if self.players[i] is None:
                 return False
         return True
+
+    def read(self):
+        self.players = read_json_from_file(self.PLAYERS_JSON)
+
+    def is_active(self):
+        return os.path.exists(self.PLAYERS_JSON)
+
+    def in_game(self, json_request):
+        for i in self.players:
+            if self.players[i] == get_player_hash(json_request):
+                return True
+        return False
+
+    def get_player(self, index):
+        return self.players[index]
