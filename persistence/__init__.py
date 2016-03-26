@@ -1,4 +1,5 @@
-"""
+"""Initialize module for irefuse game persistence layer.
+
 Copyright (c) 2016 Jacob Delgado,
 This file is part of I Refuse.
 

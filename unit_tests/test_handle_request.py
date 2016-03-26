@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Copyright (c) 2016 Jacob Delgado,
 This file is part of I Refuse.
@@ -114,8 +115,8 @@ class TestJoinRequestHandler(unittest.TestCase):
                     PLAYERS_JSON)
         shutil.copy(get_expected(START_GAME), CURRENT_GAME_JSON)
         output_json = get_output_json(self.request_handler, JOIN_GAME)
-        expected_json = get_expected_json("join_player_already_in_game_waiting")
-        self.assertEquals(output_json, expected_json)
+        expected = get_expected_json("join_player_already_in_game_waiting")
+        self.assertEquals(output_json, expected)
 
 
 class TestStatusRequestHandler(unittest.TestCase):

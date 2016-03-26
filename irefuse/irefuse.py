@@ -1,5 +1,5 @@
-"""
-Module is responsible for handling of game/business logic behind 'I Refuse'
+"""Module is responsible for handling of game/business logic behind 'I Refuse'.
+
 Copyright (c) 2016 Jacob Delgado,
 This file is part of I Refuse.
 
@@ -15,6 +15,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 """
 import json
 import random
@@ -24,9 +25,8 @@ from irefuse.player import Players
 
 
 class IRefuse(object):
-    """
-    The game logic behind 'I Refuse.'
-    """
+    """The game logic behind I Refuse."""
+
     USER_PASSES = 1
     USER_TAKES_CARD = 2
     MIN_PLAYERS = 3
@@ -36,12 +36,13 @@ class IRefuse(object):
     MAX_CARD = 36
 
     def __init__(self):
+        """Constructor for 'I Refuse' game object."""
         self.cards = []
         self.players = None
 
     def setup(self, input_func):
         """
-        Sets up the card game.
+        Set up the card game.
 
         :param input_func: The function to use to prompt the user with.
         :return: None
@@ -52,7 +53,7 @@ class IRefuse(object):
     @staticmethod
     def setup_players(input_func):
         """
-        Sets up the number of players. Must be between 3-5.
+        Set up the number of players. Must be between 3-5.
 
         :param input_func: Used for mocking input()
         :return: A list of game.player.Player objects
@@ -66,9 +67,7 @@ class IRefuse(object):
 
     @staticmethod
     def setup_cards():
-        """
-        :return: A list of randomized 24 cards ranging from 3-35.
-        """
+        """:return: A list of randomized 24 cards ranging from 3-35."""
         return random.sample(range(IRefuse.MIN_CARD, IRefuse.MAX_CARD),
                              IRefuse.NUMBER_OF_ROUNDS)
 
@@ -114,14 +113,13 @@ class IRefuse(object):
 
     def prompt_for_action(self, card, tokens, input_func, current_player):
         """
-        Prompts the user for action, returns true if the user takes a cards,
-        false otherwise.
+        Prompt the user for action. Return enum for user selection.
 
         :param card: The card currently face up.
         :param tokens: The amount of tokens on the face up card.
         :param input_func: Prompt for user input.
         :param current_player: The player whose action it is.
-        :return: True if the user took the card, false if not.
+        :return: The user selection (enum integer).
         """
         if not current_player.can_pass():
             return IRefuse.USER_TAKES_CARD
@@ -145,14 +143,12 @@ class IRefuse(object):
 
     def flip_card(self):
         """
-        Flips the top card on the deck
+        Flip the top card on the deck.
 
         :return: The newest card to be face up.
         """
         return self.cards.pop()
 
     def serialize(self):
-        """
-        Serializes class to json string
-        """
+        """Serialize class to json string."""
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True)

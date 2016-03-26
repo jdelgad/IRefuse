@@ -1,6 +1,5 @@
-"""
-Module is responsible for handling the persistence layer between web service
-and backend.
+""" Module is responsible for handling the persistence layer for I Refuse.
+
 Copyright (c) 2016 Jacob Delgado,
 This file is part of I Refuse.
 

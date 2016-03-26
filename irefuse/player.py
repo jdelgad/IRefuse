@@ -1,5 +1,5 @@
-"""
-Module is responsible for handling the players playing 'I Refuse'.
+"""Module is responsible for handling the players playing 'I Refuse'.
+
 Copyright (c) 2016 Jacob Delgado,
 This file is part of I Refuse.
 
@@ -26,6 +26,7 @@ class Players(object):
     """
 
     def __init__(self, number):
+        """Construct to represent all Players in the game."""
         self.players = []
         self.index = 0
         for i in range(number):
@@ -33,8 +34,7 @@ class Players(object):
 
     def next_player(self, player=None):
         """
-        Gets the next player in the players list by turn order. This will
-        repeat in a cycle.
+        Return the next, cyclical player in the players list by turn order.
 
         :param player: Player who just took a turn.
         :return: The next player who will take a turn.
@@ -48,7 +48,7 @@ class Players(object):
 
     def __iter__(self):
         """
-        Allows the Players object to be used as an iterable object.
+        Allow Players to be used as an iterable object.
 
         :return: A reference to the iter.
         """
@@ -81,24 +81,30 @@ class Players(object):
 
 class Player(object):
     """
-    A player in the game. Every player starts with an empty hand and with 11
-    tokens.
+    A player in the game.
+
+    Every player starts with an empty hand and with 11 tokens.
     """
+
     STARTING_TOKENS = 11
 
     def __init__(self, number):
+        """Constructor for a player, as represented in the game engine."""
         self.cards = []
         self.tokens = Player.STARTING_TOKENS
         self.number = number
 
     def __str__(self):
+        """:return: Return a string representing the player."""
         return "Player {}".format(self.number)
 
     def passes(self):
         """
-        The player wishes to pass. If the player can pass (has a token),
-        then they are allowed and a token is subtracted from their hand. No
-        state is changed if they cannot pass.
+        The player wishes to pass.
+
+        If the player can pass (has a token), then they are allowed and a
+        token is subtracted from their hand. No state is changed if they
+        cannot pass.
 
         :return: A boolean indicating whether the player was able to pass.
         """
@@ -116,19 +122,18 @@ class Player(object):
 
     def take_card(self, card, tokens):
         """
+        The user takes the card and its associated tokens.
 
-
-        :param card:
-        :param tokens:
-        :return:
+        :param card: The card currently on the game board.
+        :param tokens: The number of tokens currently on the game board.
+        :return: None
         """
         self.cards.append(card)
         self.tokens += tokens
 
     def calculate_points(self):
         """
-        Calculate the number of points the user has given their cards and
-        tokens.
+        Calculate the number of points the user has.
 
         :return: The number of points the user currently has.
         """
@@ -143,7 +148,7 @@ class Player(object):
 
     def stats(self):
         """
-        Stats for the given player
+        Return the given statistics for the given player.
 
         :return: A string of the players given hand and number of current
         points.
@@ -158,6 +163,7 @@ class Player(object):
     @staticmethod
     def __next_card_in_sequence(card, card_in_sequence):
         """
+        Return the next sequential card number given the current card.
 
         :param card: Current card in player's hands.
         :param card_in_sequence: Previous card in player's hand.

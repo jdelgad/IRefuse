@@ -1,4 +1,5 @@
-"""
+"""Initialize module for irefuse game engine.
+
 Copyright (c) 2016 Jacob Delgado,
 This file is part of I Refuse.
 

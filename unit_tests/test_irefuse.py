@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Module is responsible for testing of game/business logic behind 'I Refuse.'
 Copyright (c) 2016 Jacob Delgado,
@@ -93,12 +94,12 @@ class TestIRefuse(unittest.TestCase):
         def input_func():
             return 0
 
-        game_irefuse = irefuse.irefuse.IRefuse()
-        game_irefuse.players = irefuse.player.Players(1)
+        game = irefuse.irefuse.IRefuse()
+        game.players = irefuse.player.Players(1)
 
-        game_irefuse.players[0].tokens = 0
-        user_took_card = game_irefuse.prompt_for_action(3, 5, input_func,
-                                                        game_irefuse.players[0])
+        game.players[0].tokens = 0
+        user_took_card = game.prompt_for_action(3, 5, input_func,
+                                                game.players[0])
         self.assertEquals(2, user_took_card)
 
     def test_flip_card(self):
