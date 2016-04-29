@@ -18,10 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 import json
+import logging
 import random
-import sys
 
 from irefuse.player import Players
+
+logger = logging.getLogger()
 
 
 class IRefuse(object):
@@ -47,8 +49,11 @@ class IRefuse(object):
         :param input_func: The function to use to prompt the user with.
         :return: None
         """
+        logger.debug("Setting up I Refuse")
         self.cards = self.setup_cards()
         self.players = self.setup_players(input_func)
+        logger.info("Game created with {} players".format(len(self.players)))
+        logger.debug("Cards to be used in game: {}".format(self.cards))
 
     @staticmethod
     def setup_players(input_func):
@@ -58,10 +63,12 @@ class IRefuse(object):
         :param input_func: Used for mocking input()
         :return: A list of game.player.Player objects
         """
-        sys.stdout.write("Enter the number of players [3-5]: ")
+        print("Enter the number of players [3-5]: ")
         number_of_people_playing = int(input_func())
         if number_of_people_playing < IRefuse.MIN_PLAYERS or \
                 number_of_people_playing > IRefuse.MAX_PLAYERS:
+            logger.error("Invalid number of players specified: {}"
+                         .format(number_of_people_playing))
             raise AssertionError("invalid number of players")
         return Players(number_of_people_playing)
 
@@ -75,6 +82,9 @@ class IRefuse(object):
         """
         Calculate who won. Ties can occur.
 
+        Creates a dictionary of point values to list of players with that
+        value. Returns the players with the lowest point value.
+
         :return: The list of winners.
         """
         player_totals = {}
@@ -84,6 +94,7 @@ class IRefuse(object):
             else:
                 player_totals[player.calculate_points()] = [player]
 
+        logger.info("Final results: {}".format(self.players))
         sorted_totals = sorted(player_totals.keys())
         return player_totals[sorted_totals[0]]
 
@@ -101,14 +112,21 @@ class IRefuse(object):
             tokens = 0
             action = self.prompt_for_action(card, tokens, input_func, player)
 
+            logger.debug("Available card: {}".format(card))
             while action == IRefuse.USER_PASSES:
+                logger.debug("{} passed on {} with {} tokens remaining"
+                             .format(player, card, player.tokens))
                 tokens += 1
                 player.passes()
                 player = self.players.next_player(player)
                 action = self.prompt_for_action(card, tokens, input_func,
                                                 player)
             player.take_card(card, tokens)
+            logger.debug("{} took {} and now has {} tokens".format(player, card,
+                         player.tokens))
 
+        logger.debug("No more actions")
+        # TODO: command or query, but not both
         return self.determine_winner()
 
     def prompt_for_action(self, card, tokens, input_func, current_player):
@@ -121,12 +139,11 @@ class IRefuse(object):
         :param current_player: The player whose action it is.
         :return: The user selection (enum integer).
         """
+        # TODO: command or query, but not both
         if not current_player.can_pass():
             return IRefuse.USER_TAKES_CARD
 
         action = 0
-        for player in self.players:
-            print(player.stats())
         while not (action == IRefuse.USER_PASSES or
                    action == IRefuse.USER_TAKES_CARD):
             print("\n{} it is your turn".format(current_player))
@@ -136,7 +153,7 @@ class IRefuse(object):
             print("{}. Pass".format(IRefuse.USER_PASSES))
             print("{}. Take card".format(IRefuse.USER_TAKES_CARD))
             print("------------")
-            sys.stdout.write("Selection: ")
+            print("Selection: ")
             action = int(input_func())
 
         return action

@@ -16,6 +16,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+import logging
+
+logger = logging.getLogger()
 
 
 class Players(object):
@@ -77,6 +80,16 @@ class Players(object):
         :return: A player object referenced by index.
         """
         return self.players[index]
+
+    def __len__(self):
+        return len(self.players)
+
+    def __str__(self):
+        players = []
+        for player in self.players:
+            players += ["{} points: {}".format(player,
+                                               player.calculate_points())]
+        return ", ".join(players)
 
 
 class Player(object):
@@ -142,23 +155,17 @@ class Player(object):
         cards = sorted(self.cards)
         for card in cards:
             if not self.__next_card_in_sequence(card, card_in_sequence):
+                logger.debug("Adding {} to {}'s running point total of {}"
+                             .format(card, self.__str__(), points))
                 points += card
+            else:
+                logger.debug("{} has card in sequence. Ignoring card {}"
+                             .format(self.__str__(), card_in_sequence))
             card_in_sequence = card
+
+        logger.debug("{} has card total of {} and {} tokens".format(
+            self.__str__(), points, self.tokens))
         return points - self.tokens
-
-    def stats(self):
-        """
-        Return the given statistics for the given player.
-
-        :return: A string of the players given hand and number of current
-        points.
-        """
-        cards = sorted(self.cards)
-        return "{}: cards = {}; tokens = {}; points = {}"\
-            .format(self.__str__(),
-                    cards,
-                    self.tokens,
-                    self.calculate_points())
 
     @staticmethod
     def __next_card_in_sequence(card, card_in_sequence):
