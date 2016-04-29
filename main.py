@@ -16,7 +16,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+import json
+import logging
+import logging.config
+
 import irefuse.irefuse
+
+
+def setup_logging(logging_config):
+    with open(logging_config, 'rt') as f:
+        config = json.load(f)
+    logging.config.dictConfig(config)
+
+    return logging.getLogger()
 
 
 def main():
@@ -25,14 +37,20 @@ def main():
 
     :return: None
     """
-    game_play = irefuse.irefuse.IRefuse()
-    game_play.setup(input)
-    winners = game_play.play(input)
+    logger = setup_logging('logging.json')
+    logger.info("Starting I Refuse")
 
-    print("\n------------")
-    print("The winners are:")
+    game_play = irefuse.irefuse.IRefuse()
+    try:
+        game_play.setup(input)
+        winners = game_play.play(input)
+    except Exception:
+        logger.exception("Unhandled exception. Exiting.")
+        raise
+
     for winner in winners:
-        print(winner)
+        logger.info("Winner: {}".format(winner))
+    logger.info("Shutting down I Refuse")
 
 
 if __name__ == "__main__":

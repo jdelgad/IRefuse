@@ -98,11 +98,3 @@ class TestPlayer(unittest.TestCase):
         player = irefuse.player.Player(5)
         player_str = player.__str__()
         self.assertEquals("Player 5", player_str)
-
-    def test_print_stats(self):
-        player = irefuse.player.Player(5)
-        player.tokens = 1
-        player.cards = [24, 7, 6, 5]
-        stats = player.stats()
-        self.assertEquals("Player 5: cards = [5, 6, 7, 24]; tokens = 1; "
-                          "points = 28", stats)
