@@ -122,8 +122,8 @@ class IRefuse(object):
                 action = self.prompt_for_action(card, tokens, input_func,
                                                 player)
             player.take_card(card, tokens)
-            logger.debug("{} took {} and now has {} tokens", player, card,
-                         player.tokens)
+            logger.debug("{} took {} and now has {} tokens".format(player, card,
+                         player.tokens))
 
         logger.debug("No more actions")
         # TODO: command or query, but not both
