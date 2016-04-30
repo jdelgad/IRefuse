@@ -1,5 +1,6 @@
 current_game.json
 players.json
+irefuse.log
 __pycache__
 
 # Created by https://www.gitignore.io/api/pycharm,vim,linux,osx
