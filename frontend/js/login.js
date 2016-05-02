@@ -11,7 +11,7 @@ $(document).ready(function () {
             dataType: "json",
             contentType: "application/json",
             success: function () {
-                $("#loginForm").hide();
+                window.location.href = "/game";
             },
             error: function () {
                 $('#failedLogin').show();
