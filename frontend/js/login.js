@@ -2,20 +2,20 @@ $(document).ready(function () {
     $('#failedLogin').hide();
     $('#login').submit(function () {
         event.preventDefault();
-        var email = $('#inputEmail').val();
+        var username = $('#inputUsername').val();
         var password = $('#inputPassword').val();
         $.ajax({
             url: "/login",
             type: "POST",
-            data: JSON.stringify({email: email, password: password}),
+            data: JSON.stringify({username: username, password: password}),
             dataType: "json",
             contentType: "application/json",
             success: function () {
-                $("#loginForm").hide();
+                window.location.href = "/";
             },
             error: function () {
                 $('#failedLogin').show();
-                $('input[type="email"]').css({
+                $('input[type="text"]').css({
                     "border": "1px solid red",
                     "box-shadow": "0 0 3px red"
                 });

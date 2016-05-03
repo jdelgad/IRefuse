@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Copyright (c) 2016 Jacob Delgado,
 This file is part of I Refuse.
@@ -16,10 +15,3 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-import cherrypy
-from backend import server
-
-if __name__ == '__main__':
-    cherrypy.config.update("server.conf")
-    webapp = server.Server()
-    cherrypy.quickstart(webapp, '/', "irefuse.conf")
