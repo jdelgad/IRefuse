@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import cherrypy
-from backend.registrar import Users
+from backend.registrar import getUsers
 from passlib.hash import bcrypt
 
 from backend.auth import require
@@ -26,12 +26,7 @@ SESSION_KEY = '_cp_username'
 
 class Server(object):
     def __init__(self):
-        self.users = Users()
-        import sqlite3
-        try:
-            self.users.initialize()
-        except sqlite3.OperationalError as e:
-            pass
+        self.users = getUsers()
 
     def on_login(self, username):
         """Called on successful login"""
@@ -40,10 +35,6 @@ class Server(object):
     def on_logout(self, username):
         """Called on logout"""
         print(username)
-
-    @cherrypy.expose
-    def index(self):
-        return open('frontend/index.html')
 
     @cherrypy.expose
     @cherrypy.tools.allow(methods=['POST'])
@@ -55,11 +46,11 @@ class Server(object):
 
         input_json = cherrypy.request.json
 
-        if "email" not in input_json or "password" not in input_json:
+        if "username" not in input_json or "password" not in input_json:
             cherrypy.response.status = 400
             return error
 
-        username = input_json["email"]
+        username = input_json["username"]
         password = input_json["password"]
 
         if self.users.exists(username):
@@ -84,11 +75,12 @@ class Server(object):
 
         input_json = cherrypy.request.json
 
-        if "email" not in input_json or "password" not in input_json:
+        if "username" not in input_json or "password" not in input_json:
+            print("missing username or password")
             cherrypy.response.status = 400
             return error
 
-        username = input_json["email"]
+        username = input_json["username"]
         password = input_json["password"]
         pw_hash = bcrypt.encrypt(password)
 
@@ -103,8 +95,16 @@ class Server(object):
 
     @cherrypy.expose
     @require()
-    def game(self):
-        return open('frontend/game.html')
+    def index(self):
+        return open('frontend/index.html')
+
+    @cherrypy.expose
+    def auth(self):
+        return open('frontend/login.html')
+
+    @cherrypy.expose
+    def signup(self):
+        return open('frontend/register.html')
 
     @cherrypy.expose
     @require()
