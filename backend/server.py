@@ -16,12 +16,23 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import cherrypy
+from backend.registrar import Users
+from passlib.hash import bcrypt
+
 from backend.auth import require
 
 SESSION_KEY = '_cp_username'
 
 
 class Server(object):
+    def __init__(self):
+        self.users = Users()
+        import sqlite3
+        try:
+            self.users.initialize()
+        except sqlite3.OperationalError as e:
+            pass
+
     def on_login(self, username):
         """Called on successful login"""
         print(username)
@@ -51,7 +62,37 @@ class Server(object):
         username = input_json["email"]
         password = input_json["password"]
 
-        if username == "jacob@gmail.com" and password == "password":
+        if self.users.exists(username):
+            pw_hash = self.users.get_password(username)
+
+            if bcrypt.verify(password, pw_hash):
+                cherrypy.session.regenerate()
+                cherrypy.session[SESSION_KEY] = username
+                cherrypy.response.status = 200
+                return success
+
+        cherrypy.response.status = 400
+        return error
+
+    @cherrypy.expose
+    @cherrypy.tools.allow(methods=['POST'])
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
+    def register(self):
+        success = {"operation": "registration", "result": "success"}
+        error = {"operation": "registration", "result": "error"}
+
+        input_json = cherrypy.request.json
+
+        if "email" not in input_json or "password" not in input_json:
+            cherrypy.response.status = 400
+            return error
+
+        username = input_json["email"]
+        password = input_json["password"]
+        pw_hash = bcrypt.encrypt(password)
+
+        if self.users.register(username, pw_hash):
             cherrypy.session.regenerate()
             cherrypy.session[SESSION_KEY] = username
             cherrypy.response.status = 200
