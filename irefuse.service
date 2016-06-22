@@ -1,0 +1,21 @@
+[Unit]
+Description=I Refuse webapp
+After=network.target
+
+[Service]
+Type=simple
+User=irefuse
+Group=irefuse
+ExecStart=/opt/irefuse/webserver.sh
+
+
+[Service]
+User=irefuse
+Group=irefuse
+Environment=VIRTUAL_ENV=/opt/irefuse/virtualenvs/my_venv
+Environment=PATH=$VIRTUAL_ENV/bin:$PATH
+ExecStart=$VIRTUAL_ENV/bin/my_entrypoint
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

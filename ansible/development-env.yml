@@ -1,0 +1,16 @@
+---
+- name: Setup development environment
+  hosts: all
+  become: yes
+  become_user: root
+  tasks:
+  - name: Run apt-get ugrade
+    apt: upgrade=yes
+  - name: Install nginx
+    apt: name=nginx state=latest
+  - name: Install dependencies
+    apt: name=libffi-dev state=latest
+  - name: Install g++
+    apt: name=g++ state=latest
+  - name: Install libssl-dev
+    apt: name=libssl-dev state=latest
