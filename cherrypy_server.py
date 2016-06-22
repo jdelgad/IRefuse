@@ -20,6 +20,8 @@ import cherrypy
 from backend import server
 
 if __name__ == '__main__':
+    cherrypy.engine.unsubscribe('graceful', cherrypy.log.reopen_files)
+
     cherrypy.config.update("server.conf")
     webapp = server.Server()
     cherrypy.quickstart(webapp, '/', "irefuse.conf")

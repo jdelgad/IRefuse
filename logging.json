@@ -72,7 +72,7 @@
         "handlers": ["cherrypy_console", "cherrypy_error"],
         "level": "INFO",
         "propagate": "False"
-    },
+    }
   },
   "root": {
     "level": "INFO",
