@@ -6,16 +6,9 @@ After=network.target
 Type=simple
 User=irefuse
 Group=irefuse
-ExecStart=/opt/irefuse/webserver.sh
-
-
-[Service]
-User=irefuse
-Group=irefuse
-Environment=VIRTUAL_ENV=/opt/irefuse/virtualenvs/my_venv
-Environment=PATH=$VIRTUAL_ENV/bin:$PATH
-ExecStart=$VIRTUAL_ENV/bin/my_entrypoint
-Restart=always
+WorkingDirectory=/opt/irefuse
+Environment="VIRTUAL_ENV=/opt/irefuse/venv" "PATH=/opt/irefuse/venv/bin:$PATH"
+ExecStart=/opt/irefuse/venv/bin/python /opt/irefuse/server.py
 
 [Install]
 WantedBy=multi-user.target
