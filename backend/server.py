@@ -17,7 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import cherrypy
-from backend.registrar import getUsers
+from backend.registrar import get_users
 from passlib.hash import bcrypt
 
 from backend.auth import require
@@ -27,7 +27,7 @@ SESSION_KEY = '_cp_username'
 
 class Server(object):
     def __init__(self):
-        self.users = getUsers()
+        self.users = get_users()
 
     def on_login(self, username):
         """Called on successful login"""

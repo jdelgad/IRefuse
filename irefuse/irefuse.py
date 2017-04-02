@@ -128,7 +128,8 @@ class IRefuse(object):
         # TODO: command or query, but not both
         return self.determine_winner()
 
-    def prompt_for_action(self, card, tokens, input_func, current_player):
+    @staticmethod
+    def prompt_for_action(card, tokens, input_func, current_player):
         """
         Prompt the user for action. Return enum for user selection.
 

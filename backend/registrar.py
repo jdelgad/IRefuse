@@ -20,7 +20,7 @@ import abc
 import sqlite3
 
 
-def getUsers(debug=False):
+def get_users(debug=False):
     if debug:
         return UsersMock()
     return UsersTable()
@@ -55,7 +55,8 @@ class UsersTable(Users):
 
     def initialize(self):
         with sqlite3.connect(self.DB_STRING) as con:
-            con.execute("CREATE TABLE users (username text, password varchar(60))")
+            cmd = "CREATE TABLE users (username text, password varchar(60))"
+            con.execute(cmd)
 
     def exists(self, username):
         with sqlite3.connect(self.DB_STRING) as con:
