@@ -24,4 +24,4 @@ Simple card game where the objective is to have the least amount of points at th
 - v1.0: Support 3-5 players at the command prompt only.
 - v1.1: Minor refactor. No rules change. Got rid of code smells.
 
-Software is licensed under the GPL
+Software is licensed under the AGPL.
