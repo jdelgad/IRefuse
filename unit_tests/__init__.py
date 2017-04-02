@@ -1,4 +1,4 @@
-
+# -*- encoding: UTF-8 -*-
 """
 'I Refuse' web application
 Copyright (C) 2017  Jacob Delgado
