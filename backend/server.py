@@ -63,7 +63,7 @@ class Server(object):
                 cherrypy.response.status = 200
                 return success
 
-        cherrypy.response.status = 400
+        cherrypy.response.status = 401
         return error
 
     @cherrypy.expose
@@ -91,7 +91,7 @@ class Server(object):
             cherrypy.response.status = 200
             return success
 
-        cherrypy.response.status = 400
+        cherrypy.response.status = 401
         return error
 
     @cherrypy.expose

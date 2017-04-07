@@ -30,47 +30,50 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/register.js"></script>
-    <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
 
-<div id="registrationForm">
-    <div class="container">
-        <form class="form-signin" id="register">
+<div class="col-sm-8 col-sm-offset-2">
+    <form class="form-signin" id="register">
+        <div class="form-group">
             <h2 class="form-signin-heading">Register</h2>
+        </div>
+        <div class="form-group" id="promptForUsername">
             <label for="inputUsername" class="sr-only">Username</label>
             <input type="text" name="inputUsername" id="inputUsername"
                    class="form-control"
-                   placeholder="Username" required autofocus>
+                   placeholder="Username" required autofocus
+                   data-toggle="usernameTooltip" data-placement="right"
+                   title="Username must be between 3 and 12 characters">
+        </div>
+        <div class="form-group" id="promptForPassword">
             <label for="inputPassword" class="sr-only">Password</label>
             <input type="password" name="inputPassword" id="inputPassword"
                    class="form-control"
-                   placeholder="Password" required>
+                   placeholder="Password" required
+                   data-toggle="passwordTooltip" data-placement="right"
+                   title="Password must be at least between 6 and 16 characters">
             <input type="password" name="inputVerifyPassword"
                    id="inputVerifyPassword"
                    class="form-control"
-                   placeholder="Password (again)" required>
+                   placeholder="Password (again)" required
+                   data-toggle="passwordMatchTooltip" data-placement="right"
+                   title="Passwords must match!">
+        </div>
+        <div class="form-group">
             <div id="failedRegistration" class="alert alert-danger"
                  role="alert">
-                <button type="button" class="close" data-dismiss="alert"
-                        aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <strong>Could not register!</strong>
+                <strong id="failedRegistrationText">Could not
+                    register!</strong>
             </div>
-            <div id="invalidPassword" class="alert alert-danger"
-                 role="alert">
-                <button type="button" class="close" data-dismiss="alert"
-                        aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <strong>Could not register!</strong>
-            </div>
-            <button class="btn btn-lg btn-primary btn-block">Sign in
+        </div>
+        <div class="form-group">
+            <button id="registerBtn" class="btn btn-lg btn-primary
+                    btn-block">Register
             </button>
-        </form>
-
-    </div> <!-- /container -->
-</div> <!-- /registrationForm -->
-
+        </div>
+    </form>
+</div>
 </body>
 </html>

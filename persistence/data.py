@@ -22,6 +22,10 @@ import os
 
 from irefuse.irefuse import IRefuse
 
+INDEX = "index"
+PLAYERS = "players"
+UTF_8 = "utf-8"
+
 
 def write_object_to_file(filename, obj):
     with open(filename, "w") as current:
@@ -41,7 +45,7 @@ def read_json_from_file(filename):
 def get_player_hash(json_request):
     return hashlib.md5("{}{}".format(json_request["client_ip"],
                                      json_request["client_port"])
-                       .encode("utf-8")).hexdigest()
+                       .encode(UTF_8)).hexdigest()
 
 
 class GameJournal(object):
@@ -87,7 +91,7 @@ class GameJournal(object):
         return self.players.in_game(json_request)
 
     def __get_current_player(self):
-        return str(self.get_game_in_progress()["players"]["index"])
+        return str(self.get_game_in_progress()[PLAYERS][INDEX])
 
     def is_full(self):
         return self.players.is_full()
@@ -110,7 +114,7 @@ class Game(object):
 
     def initialize(self, json_request):
         def number_of_players():
-            return json_request["players"]
+            return json_request[PLAYERS]
 
         game = IRefuse()
         game.setup(number_of_players)
@@ -129,7 +133,7 @@ class Players(object):
 
     def initialize(self, json_request):
         self.players = {}
-        for i in range(json_request["players"]):
+        for i in range(json_request[PLAYERS]):
             self.players[i] = None
         self.players[0] = get_player_hash(json_request)
         return self.players

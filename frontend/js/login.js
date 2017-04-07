@@ -16,6 +16,62 @@
 // """
 $(document).ready(function () {
     $('#failedLogin').hide();
+    $('#inputUsername').keyup(function () {
+        if ($(this).val().length < 3 || $(this).val().length > 12) {
+            $('#inputUsername').tooltip('show');
+        } else {
+            $('#inputUsername').tooltip('hide');
+        }
+    });
+    $('#inputUsername').mouseenter(function () {
+        $('[data-toggle="usernameTooltip"]').tooltip('hide');
+    });
+    $('#inputUsername').mouseleave(function () {
+        $('[data-toggle="usernameTooltip"]').tooltip('hide');
+    });
+    $('#inputPassword').mouseenter(function () {
+        $('[data-toggle="passwordTooltip"]').tooltip('hide');
+    });
+    $('#inputPassword').mouseleave(function () {
+        $('[data-toggle="passwordTooltip"]').tooltip('hide');
+    });
+    $('#inputPassword').keyup(function () {
+        if ($(this).val().length >= 6 && $(this).val().length <= 16) {
+            $('[data-toggle="passwordTooltip"]').tooltip('hide');
+        } else {
+            $('[data-toggle="passwordTooltip"]').tooltip('show');
+        }
+    });
+    $('form input').keyup(function () {
+        var empty = false;
+        $('form input').each(function () {
+            if ($(this).val() === '') {
+                empty = true;
+            }
+        });
+
+        if ($('#inputUsername').val().length >= 3 && $('#inputUsername').val().length <= 12) {
+            $('#usernamePrompt').attr('class', 'form-group has-success');
+        } else {
+            $('#usernamePrompt').attr('class', 'form-group has-error');
+            empty = true;
+        }
+
+        if ($('#inputPassword').val().length >= 6 && $('#inputPassword').val().length <= 16) {
+            $('#passwordPrompt').attr('class', 'form-group has-success');
+        } else {
+            $('#passwordPrompt').attr('class', 'form-group has-error');
+            empty = true;
+        }
+
+        if (empty) {
+            $('#signIn').attr('disabled', 'disabled');
+            $('#signIn').attr('class', 'btn btn-lg btn-default btn-block');
+        } else {
+            $('#signIn').removeAttr('disabled');
+            $('#signIn').attr('class', 'btn btn-lg btn-primary btn-block');
+        }
+    });
     $('#login').submit(function () {
         event.preventDefault();
         var username = $('#inputUsername').val();
