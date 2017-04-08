@@ -95,17 +95,8 @@ class Server(object):
         return error
 
     @cherrypy.expose
-    @require()
     def index(self):
         return open('frontend/index.html')
-
-    @cherrypy.expose
-    def auth(self):
-        return open('frontend/login.html')
-
-    @cherrypy.expose
-    def signup(self):
-        return open('frontend/register.html')
 
     @cherrypy.expose
     @require()

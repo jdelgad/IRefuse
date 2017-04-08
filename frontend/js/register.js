@@ -25,57 +25,55 @@ $(document).ready(function () {
             }
         });
 
-        $('#inputUsername').mouseenter(function () {
-            $('[data-toggle="usernameTooltip"]').tooltip('hide');
-        });
-        $('#inputUsername').mouseleave(function () {
-            $('[data-toggle="usernameTooltip"]').tooltip('hide');
-        });
-        $('#inputPassword').mouseenter(function () {
-            $('[data-toggle="passwordTooltip"]').tooltip('hide');
-        });
-        $('#inputPassword').mouseleave(function () {
-            $('[data-toggle="passwordTooltip"]').tooltip('hide');
-        });
-        $('#inputVerifyPassword').mouseenter(function () {
-            $('[data-toggle="inputVerifyPassword"]').tooltip('hide');
-        });
-        $('#inputVerifyPassword').mouseleave(function () {
-            $('[data-toggle="inputVerifyPassword"]').tooltip('hide');
-        });
-        if ($('#inputUsername').val().length >= 3 && $('#inputUsername').val().length <= 12) {
-            $('[data-toggle="usernameTooltip"]').tooltip('hide');
-        } else {
-            $('[data-toggle="usernameTooltip"]').tooltip('show');
-            empty = true;
-        }
-
-        if (!empty) {
-            if ($('#inputPassword').val().length >= 6 && $('#inputPassword').val().length <= 16) {
-                $('[data-toggle="passwordTooltip"]').tooltip('hide');
-            } else {
-                $('[data-toggle="passwordTooltip"]').tooltip('show');
-                empty = true;
-            }
-        }
-
-        if (!empty) {
-            var password = $('#inputPassword').val();
-            var verifyPassword = $('#inputVerifyPassword').val();
-            if (password !== verifyPassword) {
-                $('[data-toggle="passwordMatchTooltip"]').tooltip('show');
-                empty = true;
-            } else {
-                $('[data-toggle="passwordMatchTooltip"]').tooltip('hide');
-            }
-        }
+        // $('#inputUsername').mouseenter(function () {
+        //     $('[data-toggle="usernameTooltip"]').tooltip('hide');
+        // });
+        // $('#inputUsername').mouseleave(function () {
+        //     $('[data-toggle="usernameTooltip"]').tooltip('hide');
+        // });
+        // $('#inputPassword').mouseenter(function () {
+        //     $('[data-toggle="passwordTooltip"]').tooltip('hide');
+        // });
+        // $('#inputPassword').mouseleave(function () {
+        //     $('[data-toggle="passwordTooltip"]').tooltip('hide');
+        // });
+        // $('#inputVerifyPassword').mouseenter(function () {
+        //     $('[data-toggle="inputVerifyPassword"]').tooltip('hide');
+        // });
+        // $('#inputVerifyPassword').mouseleave(function () {
+        //     $('[data-toggle="inputVerifyPassword"]').tooltip('hide');
+        // });
+        // if ($('#inputUsername').val().length >= 3 && $('#inputUsername').val().length <= 12) {
+        //     $('[data-toggle="usernameTooltip"]').tooltip('hide');
+        // } else {
+        //     $('[data-toggle="usernameTooltip"]').tooltip('show');
+        //     empty = true;
+        // }
+        //
+        // if (!empty) {
+        //     if ($('#inputPassword').val().length >= 6 && $('#inputPassword').val().length <= 16) {
+        //         $('[data-toggle="passwordTooltip"]').tooltip('hide');
+        //     } else {
+        //         $('[data-toggle="passwordTooltip"]').tooltip('show');
+        //         empty = true;
+        //     }
+        // }
+        //
+        // if (!empty) {
+        //     var password = $('#inputPassword').val();
+        //     var verifyPassword = $('#inputVerifyPassword').val();
+        //     if (password !== verifyPassword) {
+        //         $('[data-toggle="passwordMatchTooltip"]').tooltip('show');
+        //         empty = true;
+        //     } else {
+        //         $('[data-toggle="passwordMatchTooltip"]').tooltip('hide');
+        //     }
+        // }
 
         if (empty) {
             $('#registerBtn').attr('disabled', 'disabled');
-            $('#registerBtn').attr('class', 'btn btn-lg btn-default btn-block');
         } else {
             $('#registerBtn').removeAttr('disabled');
-            $('#registerBtn').attr('class', 'btn btn-lg btn-primary btn-block');
         }
     });
 
@@ -85,6 +83,7 @@ $(document).ready(function () {
             var password = $('#inputPassword').val();
             var verifyPassword = $('#inputVerifyPassword').val();
             if (username.length >= 3 && username.length <= 12) {
+                $('#failedRegistration').hide();
 
             } else {
                 $('#failedRegistration').hide();

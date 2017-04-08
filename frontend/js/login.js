@@ -66,10 +66,8 @@ $(document).ready(function () {
 
         if (empty) {
             $('#signIn').attr('disabled', 'disabled');
-            $('#signIn').attr('class', 'btn btn-lg btn-default btn-block');
         } else {
             $('#signIn').removeAttr('disabled');
-            $('#signIn').attr('class', 'btn btn-lg btn-primary btn-block');
         }
     });
     $('#login').submit(function () {
