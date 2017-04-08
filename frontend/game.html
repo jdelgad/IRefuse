@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>I Refuse</title>
+    <script src="js/jquery.min.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<canvas id="myCanvas" width="900" height="900" style="border:1px solid
+#000000;">
+
+<button type="button" class="btn btn-secondary">Secondary</button>
+
+</canvas>
+
+<script>
+    window.requestAnimationFrame =
+        window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame || window.oRequestAnimationFrame;
+
+    let canvas = document.getElementById('myCanvas');
+    let ctx = canvas.getContext('2d');
+
+    let x = 75,
+        y = 50,    // Radii of the white glow.
+        innerRadius = 5,
+        outerRadius = 90,    // Radius of the entire circle.
+        radius = 60;
+
+    let gradient = ctx.createRadialGradient(x, y, innerRadius, x, y, outerRadius);
+    gradient.addColorStop(0, 'red');
+    gradient.addColorStop(1, 'white');
+
+    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    ctx.fillStyle = "red";
+    ctx.textAlign = "center";
+    ctx.font = "30px Comic Sans MS";
+    ctx.fillText("Hello World", 10, 50);
+
+    let imageObj = new Image();
+    imageObj.src = 'images/3.png';
+
+    let xSpeed = .1;
+    let ySpeed = .1;
+
+    function animate(nowTime, lastTime, xPos, yPos) {
+        if ((imageObj.style.width + xPos) > canvas.width) {
+            xPos = 0;
+            yPos = 0;
+        }
+
+        let timeDelta = nowTime - lastTime;
+        let xDelta = xSpeed * timeDelta;
+        let yDelta = ySpeed * timeDelta;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(imageObj, xPos, yPos);
+
+        requestAnimationFrame(function(timestamp) {
+            animate(timestamp, nowTime, xPos + xDelta, yPos + yDelta)
+        })
+    }
+
+    //animate(0, 0, 10, 1);
+
+
+    function getMousePos(canvas, event) {
+        let rect = canvas.getBoundingClientRect();
+	return {
+		x: event.clientX - rect.left,
+		y: event.clientY - rect.top
+	};
+}
+function isInside(pos, rect){
+	return pos.x > rect.x && pos.x < rect.x+rect.width && pos.y < rect.y+rect.heigth && pos.y > rect.y
+}
+
+    let rect = {
+        x: 250,
+        y: 350,
+        width: 200,
+        heigth: 100
+    };
+
+canvas.addEventListener('click', function(evt) {
+    let mousePos = getMousePos(canvas, evt);
+    debugger;
+	if (isInside(mousePos,rect)) {
+		alert('clicked inside rect');
+    }else{
+        alert('clicked outside rect');
+    }
+}, false);
+
+ctx.beginPath();
+ctx.rect(250, 350, 200, 100);
+ctx.fillStyle = '#FFFFFF';
+ctx.fillStyle = 'rgba(225,225,225,0.5)';
+ctx.fillRect(25,72,32,32);
+ctx.fill();
+ctx.lineWidth = 2;
+ctx.strokeStyle = '#000000';
+ctx.stroke();
+ctx.closePath();
+ctx.font = '40pt Kremlin Pro Web';
+ctx.fillStyle = '#000000';
+ctx.fillText('Start', 345, 415);
+</script>
+
+
+</body>
+</html>
