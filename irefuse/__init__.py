@@ -1,6 +1,7 @@
 # -*- encoding: UTF-8 -*-
 """
-'I Refuse' web application
+'I Refuse' web application.
+
 Copyright (C) 2017  Jacob Delgado
 
 This program is free software: you can redistribute it and/or modify

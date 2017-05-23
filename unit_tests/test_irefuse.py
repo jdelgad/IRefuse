@@ -91,7 +91,7 @@ class TestIRefuse(unittest.TestCase):
 
     def test_player_no_tokens(self):
         def input_func():
-            return 0
+            return "0"
 
         game = irefuse.irefuse.IRefuse()
         game.players = irefuse.player.Players(1)
@@ -136,10 +136,10 @@ class TestIRefuse(unittest.TestCase):
         inputs = [1, 2, 1, 1, 1, 2]
 
         def input_func():
-            return inputs.pop(0)
+            return "{}".format(inputs.pop(0))
 
         def three_players():
-            return 3
+            return "3"
 
         game_irefuse = irefuse.irefuse.IRefuse()
         game_irefuse.setup(three_players)
@@ -172,10 +172,10 @@ class TestIRefuse(unittest.TestCase):
         inputs = [1, 1, 2, 2, 1, 1]
 
         def input_func():
-            return inputs.pop(0)
+            return "{}".format(inputs.pop(0))
 
         def four_players():
-            return 4
+            return "4"
 
         game_irefuse = irefuse.irefuse.IRefuse()
         game_irefuse.setup(four_players)
@@ -218,7 +218,7 @@ class TestIRefuse(unittest.TestCase):
     def test_determine_winner(self):
 
         def three_players():
-            return 3
+            return "3"
 
         game_irefuse = irefuse.irefuse.IRefuse()
         game_irefuse.setup(three_players)
@@ -239,7 +239,7 @@ class TestIRefuse(unittest.TestCase):
 
     def test_determine_winner_tie(self):
         def three_players():
-            return 3
+            return "3"
 
         game_irefuse = irefuse.irefuse.IRefuse()
         game_irefuse.setup(three_players)

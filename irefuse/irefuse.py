@@ -1,6 +1,7 @@
 # -*- encoding: UTF-8 -*-
 """
-'I Refuse' web application
+'I Refuse' web application.
+
 Copyright (C) 2017  Jacob Delgado
 
 This program is free software: you can redistribute it and/or modify
@@ -20,7 +21,9 @@ import json
 import logging
 import random
 
-from irefuse.player import Players
+from typing import Callable, List
+
+from irefuse.player import Players, Player
 
 logger = logging.getLogger()
 
@@ -37,11 +40,11 @@ class IRefuse(object):
     MAX_CARD = 36
 
     def __init__(self):
-        """Constructor for 'I Refuse' game object."""
+        """Construct 'I Refuse' game object."""
         self.cards = []
         self.players = None
 
-    def setup(self, input_func):
+    def setup(self, input_func: Callable[[], str]) -> None:
         """
         Set up the card game.
 
@@ -55,7 +58,7 @@ class IRefuse(object):
         logger.debug("Cards to be used in game: {}".format(self.cards))
 
     @staticmethod
-    def setup_players(input_func):
+    def setup_players(input_func: Callable[[], str]) -> Players:
         """
         Set up the number of players. Must be between 3-5.
 
@@ -65,19 +68,19 @@ class IRefuse(object):
         print("Enter the number of players [3-5]: ")
         number_of_people_playing = int(input_func())
         if number_of_people_playing < IRefuse.MIN_PLAYERS or \
-                number_of_people_playing > IRefuse.MAX_PLAYERS:
+           number_of_people_playing > IRefuse.MAX_PLAYERS:
             logger.error("Invalid number of players specified: {}"
                          .format(number_of_people_playing))
             raise AssertionError("invalid number of players")
         return Players(number_of_people_playing)
 
     @staticmethod
-    def setup_cards():
+    def setup_cards() -> List[int]:
         """:return: A list of randomized 24 cards ranging from 3-35."""
         return random.sample(range(IRefuse.MIN_CARD, IRefuse.MAX_CARD),
                              IRefuse.NUMBER_OF_ROUNDS)
 
-    def determine_winner(self):
+    def determine_winner(self) -> List[Player]:
         """
         Calculate who won. Ties can occur.
 
@@ -97,9 +100,9 @@ class IRefuse(object):
         sorted_totals = sorted(player_totals.keys())
         return player_totals[sorted_totals[0]]
 
-    def play(self, input_func):
+    def play(self, input_func: Callable[[], str]):
         """
-        Business logic for I Refuse. Coordinates how the game is played.
+        Coordinate how the game is played.
 
         :param input_func: Input function to prompt the user.
         :return: The list of winners after a game has been completed.
@@ -121,15 +124,18 @@ class IRefuse(object):
                 action = self.prompt_for_action(card, tokens, input_func,
                                                 player)
             player.take_card(card, tokens)
-            logger.debug("{} took {} and now has {} tokens".format(player, card,
-                         player.tokens))
+            logger.debug("{} took {} and now has {} tokens".
+                         format(player, card, player.tokens))
 
         logger.debug("No more actions")
         # TODO: command or query, but not both
         return self.determine_winner()
 
     @staticmethod
-    def prompt_for_action(card, tokens, input_func, current_player):
+    def prompt_for_action(card: int,
+                          tokens: int,
+                          input_func: Callable[[], str],
+                          current_player: Player):
         """
         Prompt the user for action. Return enum for user selection.
 
@@ -158,7 +164,7 @@ class IRefuse(object):
 
         return action
 
-    def flip_card(self):
+    def flip_card(self) -> int:
         """
         Flip the top card on the deck.
 
@@ -166,6 +172,6 @@ class IRefuse(object):
         """
         return self.cards.pop()
 
-    def serialize(self):
+    def serialize(self) -> str:
         """Serialize class to json string."""
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True)
