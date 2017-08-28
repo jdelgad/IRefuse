@@ -16,13 +16,21 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-import cherrypy
+from flask import Flask, send_from_directory
+
 from backend.registrar import get_users
 from passlib.hash import bcrypt
 
-from backend.auth import require
+
+app = Flask(__name__)
 
 SESSION_KEY = '_cp_username'
+
+
+@app.route("/<path:path>")
+def send(path):
+    print(path)
+    return send_from_directory("../frontend/", path)
 
 
 class Server(object):
@@ -37,73 +45,64 @@ class Server(object):
         """Called on logout"""
         print(username)
 
-    @cherrypy.expose
-    @cherrypy.tools.allow(methods=['POST'])
-    @cherrypy.tools.json_in()
-    @cherrypy.tools.json_out()
+
+    @app.route("/login")
     def login(self):
         success = {"operation": "login", "result": "success"}
         error = {"operation": "login", "result": "error"}
 
-        input_json = cherrypy.request.json
-
-        if "username" not in input_json or "password" not in input_json:
-            cherrypy.response.status = 400
-            return error
-
-        username = input_json["username"]
-        password = input_json["password"]
-
-        if self.users.exists(username):
-            pw_hash = self.users.get_password(username)
-
-            if bcrypt.verify(password, pw_hash):
-                cherrypy.session.regenerate()
-                cherrypy.session[SESSION_KEY] = username
-                cherrypy.response.status = 200
-                return success
-
-        cherrypy.response.status = 401
+        # input_json = cherrypy.request.json
+        #
+        # if "username" not in input_json or "password" not in input_json:
+        #     cherrypy.response.status = 400
+        #     return error
+        #
+        # username = input_json["username"]
+        # password = input_json["password"]
+        #
+        # if self.users.exists(username):
+        #     pw_hash = self.users.get_password(username)
+        #
+        #     if bcrypt.verify(password, pw_hash):
+        #         cherrypy.session.regenerate()
+        #         cherrypy.session[SESSION_KEY] = username
+        #         cherrypy.response.status = 200
+        #         return success
+        #
+        # cherrypy.response.status = 401
         return error
 
-    @cherrypy.expose
-    @cherrypy.tools.allow(methods=['POST'])
-    @cherrypy.tools.json_in()
-    @cherrypy.tools.json_out()
+    @app.route("/register")
     def register(self):
         success = {"operation": "registration", "result": "success"}
         error = {"operation": "registration", "result": "error"}
 
-        input_json = cherrypy.request.json
-
-        if "username" not in input_json or "password" not in input_json:
-            print("missing username or password")
-            cherrypy.response.status = 400
-            return error
-
-        username = input_json["username"]
-        password = input_json["password"]
-        pw_hash = bcrypt.encrypt(password)
-
-        if self.users.register(username, pw_hash):
-            cherrypy.session.regenerate()
-            cherrypy.session[SESSION_KEY] = username
-            cherrypy.response.status = 200
-            return success
-
-        cherrypy.response.status = 401
+        # input_json = cherrypy.request.json
+        #
+        # if "username" not in input_json or "password" not in input_json:
+        #     print("missing username or password")
+        #     cherrypy.response.status = 400
+        #     return error
+        #
+        # username = input_json["username"]
+        # password = input_json["password"]
+        # pw_hash = bcrypt.encrypt(password)
+        #
+        # if self.users.register(username, pw_hash):
+        #     cherrypy.session.regenerate()
+        #     cherrypy.session[SESSION_KEY] = username
+        #     cherrypy.response.status = 200
+        #     return success
+        #
+        # cherrypy.response.status = 401
         return error
 
-    @cherrypy.expose
-    def index(self):
-        return open('frontend/index.html')
-
-    @cherrypy.expose
-    @require()
+    @app.route("/logout")
     def logout(self):
-        session = cherrypy.session
-        username = session.get(SESSION_KEY, None)
-        session[SESSION_KEY] = None
-        if username:
-            self.on_logout(username)
-        raise cherrypy.HTTPRedirect("/")
+        # session = cherrypy.session
+        # username = session.get(SESSION_KEY, None)
+        # session[SESSION_KEY] = None
+        # if username:
+        #     self.on_logout(username)
+        # raise cherrypy.HTTPRedirect("/")
+        return None
