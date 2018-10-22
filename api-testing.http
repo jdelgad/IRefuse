@@ -1,0 +1,16 @@
+### Send POST request with json body
+POST http://127.0.0.1:5000/register
+Content-Type: application/json
+
+{
+  "username": "Jacob",
+  "password": "1234"
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###

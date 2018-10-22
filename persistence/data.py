@@ -25,7 +25,7 @@ from typing import Any
 from irefuse.irefuse import IRefuse
 
 INDEX = "index"
-PLAYERS = "players"
+PLAYERS: str = "players"
 UTF_8 = "utf-8"
 
 

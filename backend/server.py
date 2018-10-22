@@ -16,15 +16,15 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, request, session, jsonify
+import bcrypt
 
 from backend.registrar import get_users
-from passlib.hash import bcrypt
-
-
 app = Flask(__name__)
+app.secret_key = 'You Will Never Guess'
 
-SESSION_KEY = '_cp_username'
+SALT = bcrypt.gensalt()
+users = get_users()
 
 
 @app.route("/<path:path>")
@@ -33,76 +33,64 @@ def send(path):
     return send_from_directory("../frontend/", path)
 
 
-class Server(object):
-    def __init__(self):
-        self.users = get_users()
+@app.route("/login", methods=['POST'])
+def login():
+    success = {"operation": "login", "result": "success"}
+    error = {"operation": "login", "result": "error"}
 
-    def on_login(self, username):
-        """Called on successful login"""
-        print(username)
+    if not request.is_json:
+        return 'Bad Request', 404
 
-    def on_logout(self, username):
-        """Called on logout"""
-        print(username)
+    input_json = request.get_json()
+
+    if "username" not in input_json or "password" not in input_json:
+        return jsonify(error), 400
+
+    username = input_json["username"]
+    password = input_json["password"]
+
+    if users.exists(username):
+        pw_hash = users.get_password(username)
+
+        if bcrypt.hashpw(password.encode("utf8"), pw_hash):
+            session['username'] = username
+            return jsonify(success), 200
+
+    return jsonify(error), 401
 
 
-    @app.route("/login")
-    def login(self):
-        success = {"operation": "login", "result": "success"}
-        error = {"operation": "login", "result": "error"}
+@app.route("/register", methods=['POST'])
+def register():
+    success = {"operation": "registration", "result": "success"}
+    error = {"operation": "registration", "result": "error"}
 
-        # input_json = cherrypy.request.json
-        #
-        # if "username" not in input_json or "password" not in input_json:
-        #     cherrypy.response.status = 400
-        #     return error
-        #
-        # username = input_json["username"]
-        # password = input_json["password"]
-        #
-        # if self.users.exists(username):
-        #     pw_hash = self.users.get_password(username)
-        #
-        #     if bcrypt.verify(password, pw_hash):
-        #         cherrypy.session.regenerate()
-        #         cherrypy.session[SESSION_KEY] = username
-        #         cherrypy.response.status = 200
-        #         return success
-        #
-        # cherrypy.response.status = 401
-        return error
+    if not request.is_json:
+        return 'Bad Request', 404
 
-    @app.route("/register")
-    def register(self):
-        success = {"operation": "registration", "result": "success"}
-        error = {"operation": "registration", "result": "error"}
+    input_json = request.get_json()
 
-        # input_json = cherrypy.request.json
-        #
-        # if "username" not in input_json or "password" not in input_json:
-        #     print("missing username or password")
-        #     cherrypy.response.status = 400
-        #     return error
-        #
-        # username = input_json["username"]
-        # password = input_json["password"]
-        # pw_hash = bcrypt.encrypt(password)
-        #
-        # if self.users.register(username, pw_hash):
-        #     cherrypy.session.regenerate()
-        #     cherrypy.session[SESSION_KEY] = username
-        #     cherrypy.response.status = 200
-        #     return success
-        #
-        # cherrypy.response.status = 401
-        return error
+    if "username" not in input_json or "password" not in input_json:
+        print("missing username or password")
+        return jsonify(error), 400
 
-    @app.route("/logout")
-    def logout(self):
-        # session = cherrypy.session
-        # username = session.get(SESSION_KEY, None)
-        # session[SESSION_KEY] = None
-        # if username:
-        #     self.on_logout(username)
-        # raise cherrypy.HTTPRedirect("/")
-        return None
+    username = input_json["username"]
+    password = input_json["password"]
+    pw_hash = bcrypt.hashpw(password.encode("utf8"), SALT)
+
+    if users.register(username, pw_hash):
+        session['username'] = username
+        return jsonify(success), 200
+
+    return jsonify(error), 401
+
+
+@app.route("/logout", methods=['POST'])
+def logout():
+    if 'username' in session.keys():
+        session.pop('username')
+    return 'Logged out', 200
+
+
+if __name__ == "__main__":
+    users.initialize()
+    app.run()

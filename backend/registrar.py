@@ -20,7 +20,7 @@ import abc
 import sqlite3
 
 
-def get_users(debug=False):
+def get_users(debug: bool=False):
     if debug:
         return UsersMock()
     return UsersTable()
@@ -34,15 +34,15 @@ class Users(object):
         """Initializes the data store"""
 
     @abc.abstractmethod
-    def exists(self, username):
+    def exists(self, username: str):
         """Returns a boolean if user is known"""
 
     @abc.abstractmethod
-    def register(self, username, password):
+    def register(self, username: str, password: str):
         """Registers the user and their password in the data store"""
 
     @abc.abstractmethod
-    def get_password(self, username):
+    def get_password(self, username: str):
         """Returns the password as it is stored for the given user"""
 
     @abc.abstractmethod
@@ -55,8 +55,9 @@ class UsersTable(Users):
 
     def initialize(self):
         with sqlite3.connect(self.DB_STRING) as con:
+            c = con.cursor()
             cmd = "CREATE TABLE users (username text, password varchar(60))"
-            con.execute(cmd)
+            c.execute(cmd)
 
     def exists(self, username):
         with sqlite3.connect(self.DB_STRING) as con:
@@ -74,7 +75,7 @@ class UsersTable(Users):
             con.commit()
             return True
 
-    def get_password(self, username):
+    def get_password(self, username: str):
         with sqlite3.connect(self.DB_STRING) as con:
             cmd = "SELECT * FROM users WHERE username=? LIMIT 1"
             return con.execute(cmd, (username,)).fetchone()[1]
@@ -91,16 +92,16 @@ class UsersMock(Users):
     def initialize(self):
         pass
 
-    def exists(self, username):
+    def exists(self, username: str):
         return username in self.users
 
-    def register(self, username, password):
+    def register(self, username: str, password: str):
         if self.exists(username):
             return False
         self.users[username] = password
         return True
 
-    def get_password(self, username):
+    def get_password(self, username: str):
         return self.users[username]
 
     def destroy(self):

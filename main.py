@@ -24,7 +24,7 @@ import logging.config
 import irefuse.irefuse
 
 
-def setup_logging(logging_config):
+def setup_logging(logging_config: str) -> logging.Logger:
     with open(logging_config, 'rt') as f:
         config = json.load(f)
     logging.config.dictConfig(config)
@@ -35,8 +35,6 @@ def setup_logging(logging_config):
 def main():
     """
     Main function
-
-    :return: None
     """
     logger = setup_logging('logging.json')
     logger.info("Starting I Refuse")
