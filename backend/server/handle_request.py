@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from abc import ABCMeta, abstractmethod
 
-from persistence.data import GameJournal
+from backend.persistence.data import GameJournal
 
 GAME_HAS_NOT_BEEN_STARTED = '{ "response": 200, ' \
                             '"message": "No game has been started" }'

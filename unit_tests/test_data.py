@@ -20,7 +20,7 @@ import json
 import unittest
 import shutil
 
-from persistence.data import GameJournal
+from backend.persistence.data import GameJournal
 from unit_tests.utfiles import remove_current_game, remove_players_list, \
     get_expected, get_input, get_expected_json, get_json
 

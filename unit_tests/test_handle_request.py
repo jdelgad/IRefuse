@@ -20,7 +20,7 @@ import json
 import shutil
 import unittest
 
-from backend.handle_request import JoinRequestHandler, \
+from backend.server.handle_request import JoinRequestHandler, \
     StatusRequestHandler, StartRequestHandler
 from unit_tests.utfiles import get_input, get_expected, remove_players_list, \
     remove_current_game, get_expected_json

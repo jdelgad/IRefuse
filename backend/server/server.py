@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from flask import Flask, send_from_directory, request, session, jsonify
 import bcrypt
 
-from backend.registrar import get_users
+from backend.server.registrar import get_users
 app = Flask(__name__)
 app.secret_key = 'You Will Never Guess'
 
