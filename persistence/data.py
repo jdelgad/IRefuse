@@ -34,7 +34,7 @@ def write_object_to_file(filename: str, obj: Any):
         json.dump(obj, current)
 
 
-def write_json_to_file(filename: str, obj: dict):
+def write_json_to_file(filename: str, obj: str):
     with open(filename, "w") as current:
         current.write(obj)
 

@@ -17,36 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import json
-from http.server import BaseHTTPRequestHandler
-
 import jsonschema as jsonschema
-
-
-class IRefuseHTTPRESTEndPoint(BaseHTTPRequestHandler):
-
-    def do_POST(self):
-        length = int(self.headers['Content-Length'])
-        post_type = self.headers['Content-Type']
-
-        if post_type == "application/json":
-            post_data = self.rfile.read(length).decode("utf-8")
-
-            # You now have a dictionary of the post data, append client's
-            # address
-            json_data = json.loads(post_data)
-
-            if is_valid_json(json_data):
-                json_data["client_ip"] = self.client_address[0]
-                json_data["client_port"] = self.client_address[1]
-                self.wfile.write("received valid json {}".format(json_data)
-                                 .encode("utf-8"))
-            else:
-                self.wfile.write("received invalid json".encode("utf-8"))
-        else:
-            self.send_response(400)
-            self.end_headers()
-            self.wfile.write("Invalid request".encode("utf-8"))
-
 
 schema_start_game = """{
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -77,6 +48,7 @@ schema_start_game = """{
     "players"
   ]
 }"""
+
 schema_join_game = """{
   "$schema": "http://json-schema.org/draft-04/schema#",
   "id": "/",
