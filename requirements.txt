@@ -19,5 +19,5 @@ pytz==2017.2
 requests==2.18.4
 snowballstemmer==1.2.1
 tempora==1.9
-urllib3==1.22
+urllib3==1.26.5
 Werkzeug==0.12.2
